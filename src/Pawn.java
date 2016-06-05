@@ -30,11 +30,11 @@ public class Pawn implements Piece {
         if(move.row() < 0 || move.row() > 7 || move.col() < 0 || move.col() > 7) //out of bounds
             return false;
         // |          same column     |                      nothing in front of it          |     only moving up one
-        if(move.col() == location.col() && board[move.row()][location.row()].toChar() == '-' && location.row() - move.row() == 1) {
+        if(move.col() == location.col() && board[move.row()][move.col()].toChar() == '-' && ((location.row() - move.row() == 1 && color == 'b') || (location.row() - move.row() == -1 && color == 'w'))) {
             return true;
         }
         // |           move up one           |         column shifts one
-        if(location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1){
+        if((location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b') || (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w')){
             char dest = board[move.row()][move.col()].toChar();
             if(Character.toUpperCase(dest) == dest && Character.toUpperCase(name) == name) //landing on same team White
                 return false;
@@ -63,6 +63,7 @@ public class Pawn implements Piece {
         if(validMove(move)) {
             Piece placeholder = board[move.row()][move.col()];
             board[move.row()][move.col()] = this;
+            board[location.row()][location.col()] = new EmptySquare(board,location);
             updateLocation(move);
             classBoard.remove(placeholder);
         }

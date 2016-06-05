@@ -61,6 +61,7 @@ public class Knight implements Piece {
         if(validMove(move)) {
             Piece placeholder = board[move.row()][move.col()];
             board[move.row()][move.col()] = this;
+            board[location.row()][location.col()] = new EmptySquare(board, location);
             updateLocation(move);
             classBoard.remove(placeholder);
         }
