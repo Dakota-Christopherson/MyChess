@@ -11,4 +11,5 @@ public interface Piece {
     ArrayList<Move> genMoves();
     char toChar();
     Move getLocation();
+    boolean validLegalMove(Move move);
 }

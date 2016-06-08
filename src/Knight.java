@@ -38,11 +38,13 @@ public class Knight implements Piece {
                 return false;
             if(Character.toLowerCase(dest) == dest && Character.toLowerCase(name) == name) //landing on same team Black
                 return false;
-            if(classBoard.endangersKing(color))
-                return false;
             return true;
         }
         return false;
+    }
+
+    public boolean validLegalMove(Move move) {
+        return validMove(move) && !classBoard.endangersKing(color);
     }
 
     public ArrayList<Move> genMoves() {

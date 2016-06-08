@@ -38,11 +38,13 @@ public class Queen implements Piece {
                 return false;
             if(Character.toLowerCase(dest) == dest && Character.toLowerCase(name) == name) //landing on same team Black
                 return false;
-            if(classBoard.endangersKing(color))
-                return false;
             return true;
         }
         return false;
+    }
+
+    public boolean validLegalMove(Move move) {
+        return validMove(move) && !classBoard.endangersKing(color);
     }
 
     public ArrayList<Move> genMoves() {
@@ -61,6 +63,7 @@ public class Queen implements Piece {
         if(validMove(move)) {
             Piece placeholder = board[move.row()][move.col()];
             board[move.row()][move.col()] = this;
+            board[location.row()][location.col()] = new EmptySquare(board,location);
             updateLocation(move);
             classBoard.remove(placeholder);
         }

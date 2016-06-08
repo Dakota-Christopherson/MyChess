@@ -29,4 +29,7 @@ public class EmptySquare implements Piece {
     public Move getLocation(){
         return location;
     }
+    public boolean validLegalMove(Move move) {
+        return false;
+    }
 }
