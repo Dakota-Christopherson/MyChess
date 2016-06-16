@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * Created by Cody on 6/4/2016.
  */
-public class Bishop implements Piece {
+public class Bishop extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
@@ -12,6 +12,7 @@ public class Bishop implements Piece {
     char color;
 
     public Bishop(Board board, char color, Move location) {
+        super(board, color, location);
         this.location = location;
         classBoard = board;
         this.board = board.gameBoard; //please get better at naming things in advance
@@ -24,25 +25,15 @@ public class Bishop implements Piece {
             name = 'B';
         else name = 'b';
     }
-    public boolean validMove(Move move) {
-        if(move.equals(location)) //can't move to the same place
-            return false;
-        if(move.row() < 0 || move.row() > 7 || move.col() < 0 || move.col() > 7) //out of bounds
-            return false;
+    public boolean legalMove(Move move) {
         if(Math.abs(move.row() - location.row()) == Math.abs(move.col() - location.col())) { //move up/down and left/right the same amount
-
-            char dest = board[move.row()][move.col()].toChar();
-            if(Character.toUpperCase(dest) == dest && Character.toUpperCase(name) == name) //landing on same team White
-                return false;
-            if(Character.toLowerCase(dest) == dest && Character.toLowerCase(name) == name) //landing on same team Black
-                return false;
-            return true;
+            return validMove(move);
         }
         return false;
     }
 
     public boolean validLegalMove(Move move) {
-        return validMove(move) && !classBoard.endangersKing(color);
+        return legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
     public ArrayList<Move> genMoves() {
@@ -50,7 +41,7 @@ public class Bishop implements Piece {
         for(int r = 0; r < 8; r++) {
             for(int c = 0; c < 8; c++) {
                 Move move = new Move("" + r + "" + c);
-                if(validMove(move))
+                if(legalMove(move))
                     moveList.add(move);
             }
         }
@@ -58,21 +49,15 @@ public class Bishop implements Piece {
     }
 
     public void move(Move move) {
-        if(validMove(move)) {
-            Piece placeholder = board[move.row()][move.col()];
-            board[move.row()][move.col()] = this;
-            board[location.row()][location.col()] = new EmptySquare(board,location);
+        if(legalMove(move)) {
+            super.move(move);
             updateLocation(move);
-            classBoard.remove(placeholder);
         }
     }
-    public boolean killKing(Move move){
-        if(Character.toLowerCase(board[move.row()][move.col()].toChar()) == 'k')
-            return true;
-        return false;
-    }
 
-    private void updateLocation(Move move) {
+
+    public void updateLocation(Move move) {
+        super.updateLocation(move);
         location = move;
     }
 
@@ -86,5 +71,9 @@ public class Bishop implements Piece {
 
     public char toChar(){
         return name;
+    }
+
+    public Piece clone(Board newBoard) {
+        return new Bishop(newBoard, color, location);
     }
 }

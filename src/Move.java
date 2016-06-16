@@ -19,6 +19,8 @@ public class Move {
     public boolean equals(Move m) {
         return row() == m.row() && col() == m.col();
     }
-
+    public String toString() {
+        return "" + row() + "" + col();
+    }
 
 }

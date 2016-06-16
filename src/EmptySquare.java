@@ -3,9 +3,10 @@ import java.util.ArrayList;
 /**
  * Created by Cody on 6/4/2016.
  */
-public class EmptySquare implements Piece {
+public class EmptySquare extends Piece {
     private Move location;
-    public EmptySquare(Piece[][] board, Move move) {
+    public EmptySquare(Board board, Move move) {
+        super(board,'-',move);
         location = move;
     }
     public int getValue() {
@@ -31,5 +32,8 @@ public class EmptySquare implements Piece {
     }
     public boolean validLegalMove(Move move) {
         return false;
+    }
+    public EmptySquare clone(Board newBoard) {
+        return new EmptySquare(newBoard, location);
     }
 }

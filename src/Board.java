@@ -43,26 +43,35 @@ public class Board {
         }
         for(int i = 2; i < 6; i++) {
             for(int j = 0; j < 8; j++) {
-                gameBoard[i][j] = new EmptySquare(gameBoard,new Move("" + i + "" + j));
+                gameBoard[i][j] = new EmptySquare(this,new Move("" + i + "" + j));
             }
         }
     }
 
-    public boolean endangersKing(char color) {
+    public boolean endangersKing(char color, Move move, Piece pieceMoved) {
+        boolean killed = false;
         ArrayList<Piece> list;
         if (color == 'w') {
-            list = blackPieces;
+            list = (ArrayList<Piece>)blackPieces.clone();
         } else {
-            list = whitePieces;
+            list = (ArrayList<Piece>)whitePieces.clone();
         }
+        Piece taken = gameBoard[move.row()][move.col()];
+        Move loc = pieceMoved.getLocation();
+        list.remove(taken);
+        gameBoard[move.row()][move.col()] = pieceMoved;
+        pieceMoved.updateLocation(move);
         for (Piece p : list) {
             ArrayList<Move> moveList = p.genMoves();
             for (Move m : moveList) {
                 if (p.killKing(m))
-                    return true;
+                    killed = true;
             }
         }
-        return false;
+        gameBoard[loc.row()][loc.col()] = pieceMoved;
+        pieceMoved.updateLocation(loc);
+        gameBoard[move.row()][move.col()] = taken;
+        return killed;
     }
 
     public void remove(Piece p) {
@@ -105,5 +114,53 @@ public class Board {
             return true;
         }
         return false;
+    }
+
+    public int getValue() {
+        int blackScore = 0;
+        for(Piece p : blackPieces)
+            blackScore += p.getValue();
+        int whiteScore = 0;
+        for(Piece p : whitePieces)
+            whiteScore += p.getValue();
+        return whiteScore - blackScore;
+    }
+
+    public Board cloneBoard() {
+        Board clonedBoard = new Board();
+        //empty the piece lists
+        clonedBoard.blackPieces = new ArrayList<>();
+        clonedBoard.whitePieces = new ArrayList<>();
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                //set the board state equal
+                Piece newPiece = gameBoard[i][j].clone(clonedBoard);
+                clonedBoard.gameBoard[i][j] = newPiece;
+                //fix the piece lists
+                if(newPiece.getColor() == 'w')
+                    clonedBoard.whitePieces.add(newPiece);
+                else if(newPiece.getColor() == 'b')
+                    clonedBoard.blackPieces.add(newPiece);
+            }
+        }
+
+        return clonedBoard;
+    }
+
+    public Move[][] getMoves(char color) {
+        ArrayList<Piece> pieceList;
+        if(color == 'w')
+            pieceList = whitePieces;
+        else pieceList = blackPieces;
+        Move[][] moveList = new Move[pieceList.size()][];
+        for(int i = 0; i < moveList.length; i++) {
+            Object[] pieceMoves = pieceList.get(i).genMoves().toArray();
+            Move[] placeholder = new Move[pieceMoves.length];
+            for(int j = 0; j <  placeholder.length; j++) {
+                placeholder[j] = (Move)pieceMoves[j];
+            }
+            moveList[i] = placeholder;
+        }
+        return moveList;
     }
 }

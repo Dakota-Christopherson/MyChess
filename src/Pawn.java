@@ -3,15 +3,18 @@ import java.util.ArrayList;
 /**
  * Created by Cody on 6/4/2016.
  */
-public class Pawn implements Piece {
+public class Pawn extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
     private Move location;
     private int value = 1;
     char color;
+    boolean hasMoved = false;
+    boolean enPassantPoss = false;
 
     public Pawn(Board board, char color, Move location) {
+        super(board, color, location);
         this.location = location;
         classBoard = board;
         this.board = board.gameBoard; //please get better at naming things in advance
@@ -24,36 +27,30 @@ public class Pawn implements Piece {
             name = 'P';
         else name = 'p';
     }
-    public boolean validMove(Move move) {
-        if(move.equals(location)) //can't move to the same place
-            return false;
-        if(move.row() < 0 || move.row() > 7 || move.col() < 0 || move.col() > 7) //out of bounds
-            return false;
-        // |          same column     |                      nothing in front of it          |     only moving up one
-        if(move.col() == location.col() && board[move.row()][move.col()].toChar() == '-' && ((location.row() - move.row() == 1 && color == 'b') || (location.row() - move.row() == -1 && color == 'w'))) {
-            return true;
+    public boolean legalMove(Move move) {
+        // |          same column     |                      nothing in front of it          |     only moving up one or two if it hasn't moved
+        if(move.col() == location.col() && board[move.row()][move.col()].toChar() == '-' &&
+                (((location.row() - move.row() == 1 || (location.row() - move.row() == 2 && !hasMoved)) && color == 'b') || //black
+                ((location.row() - move.row() == -1 || (location.row() - move.row() == -2 && !hasMoved)) && color == 'w'))) { //white
+            return validMove(move);
         }
         // |           move up one           |         column shifts one
-        if((location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b') || (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w')){
-            char dest = board[move.row()][move.col()].toChar();
-            if(Character.toUpperCase(dest) == dest && Character.toUpperCase(name) == name) //landing on same team White
-                return false;
-            if(Character.toLowerCase(dest) == dest && Character.toLowerCase(name) == name) //landing on same team Black
-                return false;
-            return true;
+        char colorDest = board[move.row()][move.col()].getColor();
+        if((location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b' && colorDest == 'w') || (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w' && colorDest == 'b')){
+            return validMove(move);
         }
         return false;
     }
 
     public boolean validLegalMove(Move move) {
-        return validMove(move) && !classBoard.endangersKing(color);
+        return legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
     public ArrayList<Move> genMoves() {
         ArrayList<Move> moveList = new ArrayList<>();
         for(int r = 0; r < 8; r++) {
             for(int c = 0; c < 8; c++) {
                 Move move = new Move("" + r + "" + c);
-                if(validMove(move))
+                if(legalMove(move))
                     moveList.add(move);
             }
         }
@@ -61,21 +58,21 @@ public class Pawn implements Piece {
     }
 
     public void move(Move move) {
-        if(validMove(move)) {
-            Piece placeholder = board[move.row()][move.col()];
-            board[move.row()][move.col()] = this;
-            board[location.row()][location.col()] = new EmptySquare(board,location);
+        if(legalMove(move)) {
+            super.move(move);
+            //
+            //NOTE: NEED TO DO EN PASSANT CHECKING IN MAIN AS WELL, YOU LOSE YOUR CHANCE AFTER ONE MOVE
+            //
+            if(Math.abs(move.col() - location.col()) == 2)
+                enPassantPoss = true;
             updateLocation(move);
-            classBoard.remove(placeholder);
+            hasMoved = true;
         }
     }
-    public boolean killKing(Move move){
-        if(Character.toLowerCase(board[move.row()][move.col()].toChar()) == 'k')
-            return true;
-        return false;
-    }
 
-    private void updateLocation(Move move) {
+
+    public void updateLocation(Move move) {
+        super.updateLocation(move);
         location = move;
     }
 
@@ -89,5 +86,9 @@ public class Pawn implements Piece {
 
     public char toChar(){
         return name;
+    }
+
+    public Piece clone(Board newBoard) {
+        return new Pawn(newBoard, color, location);
     }
 }
