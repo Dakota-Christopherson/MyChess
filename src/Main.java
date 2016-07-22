@@ -37,7 +37,8 @@ public class Main {
                 }
             }
 
-            System.out.println(Stats.nodesEval);
+            System.out.println("Nodes evaluated: " + Stats.nodesEval);
+            System.out.println("Board evaluation: " + b1.getValue());
             Stats.nodesEval = 0;
             b1.printBoard();
         }

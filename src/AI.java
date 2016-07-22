@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class AI {
     private Board board;
     private char color;
-    private int ply = 3;
+    private int ply = 4;
     public AI(Board board, char color) {
         this.board = board;
         this.color = color;
@@ -28,8 +28,8 @@ public class AI {
             for(int j = 0; j < moveList[i].length; j++) {
                 Board placeholder = board.cloneBoard();
                 String locString = pieces.get(i).getLocation().row() + "" + pieces.get(i).getLocation().col();
-                placeholder.parseMove("" + locString + "" + moveList[i][j].row() + moveList[i][j].col());
-                //true or false depending on which color
+                placeholder.forceMove("" + locString + "" + moveList[i][j].row() + moveList[i][j].col());
+                //                                                                                 true or false depending on which color
                 moveScores[i][j] = miniMax(placeholder, ply, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
             }
         }
@@ -58,14 +58,27 @@ public class AI {
         //System.out.println("moveList length: " + moveList.length);
         //System.out.println("moveList[] length: " + moveList[pieceIndex].length);
         //System.out.println("moveScores[] length: " + moveScores[pieceIndex].length);
+
         String finMove = "" + pieces.get(pieceIndex).getLocation().row() + "" + pieces.get(pieceIndex).getLocation().col();
         finMove += "" + moveList[pieceIndex][moveIndex].row() + "" + moveList[pieceIndex][moveIndex].col();
+
+        for(int i = 0; i < moveScores.length; i++) {
+            for (int j = 0; j < moveScores[i].length; j++) {
+                System.out.println("Move score: " + moveScores[i][j] + ", move: " + "" +
+                        pieces.get(i).getLocation().row() + "" + pieces.get(i).getLocation().col() + "" + moveList[i][j].row() + "" + moveList[i][j].col());
+            }
+        }
+
+        System.out.println("Score: " + moveScores[pieceIndex][moveIndex] + ", move: " + finMove);
+
+
         return finMove;
     }
 
     public int miniMax(Board board1, int depth, int alpha, int beta, boolean maximizingPlayer) {
-        if(depth == 0 || board1.gameOver())
+        if(depth == 0 || board1.gameOver()) {
             return board1.getValue();
+        }
 
         if(maximizingPlayer) {
             int bestValue = Integer.MIN_VALUE;
@@ -74,7 +87,7 @@ public class AI {
                 for(int j = 0; j < moveList[i].length; j++) {
                     Board placeholder = board1.cloneBoard();
                     Piece p = placeholder.whitePieces.get(i);
-                    placeholder.parseMove(p.getLocation().toString() + "" + moveList[i][j].toString());
+                    placeholder.forceMove(p.getLocation().toString() + "" + moveList[i][j].toString());
                     int v = miniMax(placeholder, depth - 1, alpha, beta, false);
                     bestValue = Math.max(bestValue, v);
 
@@ -93,7 +106,7 @@ public class AI {
                 for(int j = 0; j < moveList[i].length; j++) {
                     Board placeholder = board1.cloneBoard();
                     Piece p = placeholder.blackPieces.get(i);
-                    placeholder.parseMove(p.getLocation().toString() + "" + moveList[i][j].toString());
+                    placeholder.forceMove(p.getLocation().toString() + "" + moveList[i][j].toString());
                     int v = miniMax(placeholder, depth - 1, alpha, beta, true);
                     bestValue = Math.min(bestValue, v);
 

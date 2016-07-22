@@ -45,6 +45,7 @@ public class Pawn extends Piece {
     public boolean validLegalMove(Move move) {
         return legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
+
     public ArrayList<Move> genMoves() {
         ArrayList<Move> moveList = new ArrayList<>();
         for(int r = 0; r < 8; r++) {
@@ -67,6 +68,20 @@ public class Pawn extends Piece {
                 enPassantPoss = true;
             updateLocation(move);
             hasMoved = true;
+
+            if(color == 'w' && location.row() == 7) {
+                Queen newQ = new Queen(classBoard, 'w', location);
+                board[location.row()][location.col()] = newQ;
+                classBoard.remove(this);
+                classBoard.whitePieces.add(newQ);
+            }
+
+            if(color == 'b' && location.row() == 0) {
+                Queen newQ = new Queen(classBoard, 'b', location);
+                board[location.row()][location.col()] = newQ;
+                classBoard.remove(this);
+                classBoard.whitePieces.add(newQ);
+            }
         }
     }
 
@@ -91,4 +106,5 @@ public class Pawn extends Piece {
     public Piece clone(Board newBoard) {
         return new Pawn(newBoard, color, location);
     }
+
 }

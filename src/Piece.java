@@ -4,6 +4,7 @@ import java.util.ArrayList;
  * Created by Cody on 6/4/2016.
  */
 public abstract class Piece {
+    boolean pieceHasMoved = false;
     private Piece[][] board;
     private Board classBoard;
     private Move location;
@@ -70,6 +71,7 @@ public abstract class Piece {
             board[location.row()][location.col()] = new EmptySquare(classBoard, location);
             updateLocation(move);
             classBoard.remove(placeholder);
+            pieceHasMoved = true;
         }
     }
     public boolean killKing(Move move){
@@ -86,9 +88,7 @@ public abstract class Piece {
         return location;
     }
 
-    public int getValue() {
-        return value;
-    }
+    public abstract int getValue();
 
     public char toChar(){
         return name;
@@ -99,4 +99,5 @@ public abstract class Piece {
     }
 
     public abstract Piece clone(Board newBoard);
+
 }
