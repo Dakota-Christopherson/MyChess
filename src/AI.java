@@ -6,10 +6,14 @@ import java.util.ArrayList;
 public class AI {
     private Board board;
     private char color;
-    private int ply = 4;
-    public AI(Board board, char color) {
+    private int ply;
+    private boolean turn;
+    public AI(Board board, char color, int ply) {
+        this.ply = ply;
         this.board = board;
         this.color = color;
+
+        turn = color == 'b';
     }
 
     public String aiMove() {
@@ -29,8 +33,8 @@ public class AI {
                 Board placeholder = board.cloneBoard();
                 String locString = pieces.get(i).getLocation().row() + "" + pieces.get(i).getLocation().col();
                 placeholder.forceMove("" + locString + "" + moveList[i][j].row() + moveList[i][j].col());
-                //                                                                                 true or false depending on which color
-                moveScores[i][j] = miniMax(placeholder, ply, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+
+                moveScores[i][j] = miniMax(placeholder, ply, Integer.MIN_VALUE, Integer.MAX_VALUE, turn);
             }
         }
 

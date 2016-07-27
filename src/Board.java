@@ -68,10 +68,12 @@ public class Board {
         gameBoard[loc.row()][loc.col()] = new EmptySquare(this, loc);
         pieceMoved.updateLocation(move);
         for (Piece p : list) {
-            ArrayList<Move> moveList = p.genMoves();
-            for (Move m : moveList) {
-                if (p.killKing(m))
-                    killed = true;
+            if(!(p instanceof King)) {
+                ArrayList<Move> moveList = p.genMoves();
+                for (Move m : moveList) {
+                    if (p.killKing(m))
+                        killed = true;
+                }
             }
         }
         gameBoard[loc.row()][loc.col()] = pieceMoved;
@@ -127,7 +129,7 @@ public class Board {
 
     public boolean forceMove(String m) {
         Move move1 = new Move("" + m.charAt(0) + "" + m.charAt(1)); //start
-        Move move2 = new Move("" + m.charAt(2) + m.charAt(3)); //dest
+        Move move2 = new Move("" + m.charAt(2) + "" + m.charAt(3)); //dest
         //manually move
         remove(gameBoard[move2.row()][move2.col()]);
         gameBoard[move2.row()][move2.col()] = gameBoard[move1.row()][move1.col()];

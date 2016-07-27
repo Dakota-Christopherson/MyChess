@@ -31,13 +31,13 @@ public class Queen extends Piece {
                 (Math.abs(move.row() - location.row()) == Math.abs(move.col() - location.col())) ||      //moves like a bishop
                 (move.col() == location.col() || move.row() == location.row())) {                //moves like a rook
 
-            return validMove(move);
+            return true;
         }
         return false;
     }
 
     public boolean validLegalMove(Move move) {
-        return legalMove(move) && !classBoard.endangersKing(color, move, this);
+        return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
     public ArrayList<Move> genMoves() {
@@ -45,7 +45,7 @@ public class Queen extends Piece {
         for(int r = 0; r < 8; r++) {
             for(int c = 0; c < 8; c++) {
                 Move move = new Move("" + r + "" + c);
-                if(legalMove(move))
+                if(validMove(move) && legalMove(move))
                     moveList.add(move);
             }
         }
@@ -53,10 +53,10 @@ public class Queen extends Piece {
     }
 
     public void move(Move move) {
-        if(legalMove(move)) {
+
             super.move(move);
             updateLocation(move);
-        }
+
     }
 
 

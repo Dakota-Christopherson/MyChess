@@ -3,10 +3,13 @@ import java.util.Scanner;
 /**
  * Created by Cody on 6/4/2016.
  */
+
+
+//TODO: remove all location data from individual classes, remove endangersKing from King validMove, remove Move from all classes
 public class Main {
     public static void main(String[] args) {
         Board b1 = new Board();
-        AI ai = new AI(b1, 'b');
+        AI ai = new AI(b1, 'b', 3);
         b1.printBoard();
         Scanner scan = new Scanner(System.in);
 
@@ -42,5 +45,6 @@ public class Main {
             Stats.nodesEval = 0;
             b1.printBoard();
         }
+
     }
 }
