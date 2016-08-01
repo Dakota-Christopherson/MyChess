@@ -38,12 +38,20 @@ public class Bishop extends Piece {
 
     public ArrayList<Move> genMoves() {
         ArrayList<Move> moveList = new ArrayList<>();
-        for(int r = 0; r < 8; r++) {
-            for(int c = 0; c < 8; c++) {
-                Move move = new Move("" + r + "" + c);
-                if(validMove(move) && legalMove(move))
-                    moveList.add(move);
-            }
+        ArrayList<Move> tentativeList = new ArrayList<>();
+        int offsetCol = 1;
+        int offsetRow = 1;
+        while(location.col() + offsetCol < 8 || location.row() + offsetRow < 8 || location.col() - offsetCol >= 0 || location.row() - offsetRow >= 0) {
+            tentativeList.add(new Move("" + (offsetRow + location.row()) + "" + (offsetCol + location.col())));
+            tentativeList.add(new Move("" + (location.row() - offsetRow) + "" + (location.col() - offsetCol)));
+            tentativeList.add(new Move("" + (location.row() + offsetRow) + "" + (location.col() - offsetCol)));
+            tentativeList.add(new Move("" + (location.row() - offsetRow) + "" + (location.col() + offsetCol)));
+            offsetCol++;
+            offsetRow++;
+        }
+        for(Move move : tentativeList) {
+            if (validMove(move) && legalMove(move))
+                moveList.add(move);
         }
         return moveList;
     }

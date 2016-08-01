@@ -38,12 +38,16 @@ public class Rook extends Piece {
 
     public ArrayList<Move> genMoves() {
         ArrayList<Move> moveList = new ArrayList<>();
+        ArrayList<Move> tentativeList = new ArrayList<>();
+        for(int c = 0; c < 8; c++) {
+            tentativeList.add(new Move("" + location.row() + "" + c));
+        }
         for(int r = 0; r < 8; r++) {
-            for(int c = 0; c < 8; c++) {
-                Move move = new Move("" + r + "" + c);
-                if(validMove(move) && legalMove(move))
-                    moveList.add(move);
-            }
+            tentativeList.add(new Move("" + r + "" + location.col()));
+        }
+        for(Move move : tentativeList) {
+            if (validMove(move) && legalMove(move))
+                moveList.add(move);
         }
         return moveList;
     }

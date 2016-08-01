@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Board b1 = new Board();
-        AI ai = new AI(b1, 'b', 3);
+        AI ai = new AI(b1, 'b', 4);
         b1.printBoard();
         Scanner scan = new Scanner(System.in);
 

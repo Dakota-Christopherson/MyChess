@@ -69,12 +69,23 @@ public class King extends Piece {
 
     public ArrayList<Move> genMoves() {
         ArrayList<Move> moveList = new ArrayList<>();
-        for(int r = 0; r < 8; r++) {
-            for(int c = 0; c < 8; c++) {
-                Move move = new Move("" + r + "" + c);
-                if(validMove(move) && legalMove(move))
-                    moveList.add(move);
-            }
+        ArrayList<Move> tentativeList = new ArrayList<>();
+
+        //diagonals
+        tentativeList.add(new Move("" + (location.row() + 1) + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + (location.row() + 1) + "" + (location.col() - 1)));
+        tentativeList.add(new Move("" + (location.row() - 1) + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + (location.row() - 1) + "" + (location.col() - 1)));
+
+        //straights
+        tentativeList.add(new Move("" + (location.row() + 1) + "" + location.col()));
+        tentativeList.add(new Move("" + (location.row() - 1) + "" + location.col()));
+        tentativeList.add(new Move("" + location.row() + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + location.row() + "" + (location.col() - 1)));
+
+        for(Move move : tentativeList) {
+            if (validMove(move) && legalMove(move))
+                moveList.add(move);
         }
         return moveList;
     }

@@ -48,12 +48,21 @@ public class Pawn extends Piece {
 
     public ArrayList<Move> genMoves() {
         ArrayList<Move> moveList = new ArrayList<>();
-        for(int r = 0; r < 8; r++) {
-            for(int c = 0; c < 8; c++) {
-                Move move = new Move("" + r + "" + c);
-                if(validMove(move) && legalMove(move))
-                    moveList.add(move);
-            }
+        ArrayList<Move> tentativeList = new ArrayList<>();
+        int offset;
+        if(color == 'w')
+            offset = 1;
+        else offset = -1;
+        //captures evaluated first
+        tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() - 1)));
+        //2*offset is for the pawns first move
+        tentativeList.add(new Move("" + (location.row() + offset) + "" + location.col()));
+        tentativeList.add(new Move("" + (location.row() + 2*offset) + "" + location.col()));
+
+        for(Move move : tentativeList) {
+            if (validMove(move) && legalMove(move))
+                moveList.add(move);
         }
         return moveList;
     }

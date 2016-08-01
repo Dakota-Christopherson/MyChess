@@ -118,6 +118,8 @@ public class Board {
     }
 
     public boolean parseMove(String m) {
+        if(m.length() != 4)
+            return false;
         Move move1 = new Move("" + m.charAt(0) + "" + m.charAt(1)); //start
         Move move2 = new Move("" + m.charAt(2) + m.charAt(3)); //dest
         if(gameBoard[move1.row()][move1.col()].validLegalMove(move2)) {
