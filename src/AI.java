@@ -87,6 +87,11 @@ public class AI {
         if(maximizingPlayer) {
             int bestValue = Integer.MIN_VALUE;
             Move[][] moveList = board1.getMoves('w');
+
+
+            moveOrder(moveList);
+
+
             for(int i = 0; i < moveList.length; i++) {
                 for(int j = 0; j < moveList[i].length; j++) {
                     Board placeholder = board1.cloneBoard();
@@ -106,6 +111,11 @@ public class AI {
         else /*minimizing player*/ {
             int bestValue = Integer.MAX_VALUE;
             Move[][] moveList = board1.getMoves('b');
+
+
+            moveOrder(moveList);
+
+
             for(int i = 0; i < moveList.length; i++) {
                 for(int j = 0; j < moveList[i].length; j++) {
                     Board placeholder = board1.cloneBoard();
@@ -121,6 +131,40 @@ public class AI {
                 }
             }
             return bestValue;
+        }
+    }
+
+    public void moveOrder(Move[][] moveList) {
+        //sort moves for each piece
+        for(int piece = 0; piece < moveList.length; piece++) {
+            Move[] tmp = new Move[moveList[piece].length];
+            MergeSort.mergeSort(moveList[piece], 0, moveList[piece].length-1, tmp, board.gameBoard);
+        }
+
+        //sort by piece
+        //
+        int[] ptrVals = new int[moveList.length];
+        for(int i = 0; i < ptrVals.length; i++) {
+            if(moveList[i].length == 0)
+                ptrVals[i] = -20000;
+            else ptrVals[i] = moveList[i][0].getValue(board.gameBoard);
+        }
+
+        Move[] tmp;
+        int tmpVal;
+        for(int i = 0; i < moveList.length-1; i++) {
+            for(int j = 0; j < moveList.length-1; j++) {
+                if(ptrVals[i] < ptrVals[i+1]){
+                    tmp = moveList[i];
+                    tmpVal = ptrVals[i];
+
+                    moveList[i] = moveList[i+1];
+                    ptrVals[i] = ptrVals[i+1];
+
+                    moveList[i+1] = tmp;
+                    ptrVals[i+1] = tmpVal;
+                }
+            }
         }
     }
 }

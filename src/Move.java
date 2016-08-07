@@ -1,7 +1,7 @@
 /**
  * Created by Cody on 6/4/2016.
  */
-public class Move {
+public class Move{
     private String move;
 
     public Move(String move) {
@@ -18,6 +18,15 @@ public class Move {
 
     public boolean equals(Move m) {
         return row() == m.row() && col() == m.col();
+    }
+
+    public int getValue(Piece[][] gameBoard) {
+        return gameBoard[row()][col()].getValue();
+    }
+
+
+    public int compareTo(Piece[][] gameBoard, Move m) {
+        return gameBoard[row()][col()].getValue() - gameBoard[m.row()][m.col()].getValue();
     }
 
     @Override
