@@ -67,7 +67,7 @@ public class King extends Piece {
         return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
-    public ArrayList<Move> genMoves() {
+    public ArrayList<Move> genMovesScoring() {
         ArrayList<Move> moveList = new ArrayList<>();
         ArrayList<Move> tentativeList = new ArrayList<>();
 
@@ -83,11 +83,26 @@ public class King extends Piece {
         tentativeList.add(new Move("" + location.row() + "" + (location.col() + 1)));
         tentativeList.add(new Move("" + location.row() + "" + (location.col() - 1)));
 
+
+
         for(Move move : tentativeList) {
-            if (validMove(move) && legalMove(move))
+            if(move.row() >= 0 && move.row() <= 7 && move.col() >= 0 && move.col() <= 7)
                 moveList.add(move);
         }
         return moveList;
+    }
+
+    public ArrayList<Move> genMoves() {
+        ArrayList<Move> ml = genMovesScoring();
+        ArrayList<Move> legalList = new ArrayList<>();
+        //castles
+        ml.add(new Move("" + location.row() + "" + (location.col() + 2)));
+        ml.add(new Move("" + location.row() + "" + (location.col() - 2)));
+        for(Move m : ml) {
+            if(validMove(m) && legalMove(m)) //should add a check against capturing own piece outside of validMove
+                legalList.add(m);
+        }
+        return legalList;
     }
 
     public void move(Move move) {
@@ -129,13 +144,13 @@ public class King extends Piece {
             r = r2;
 
         if(r != null) {
-            System.out.println("r isn't null!");
+            //System.out.println("r isn't null!");
             board[r.getLocation().row()][r.getLocation().col()] = new EmptySquare(classBoard, r.getLocation());
-            System.out.println(r.getLocation().toString());
+            //System.out.println(r.getLocation().toString());
             board[location.row()][duringCastlePos] = r;
-            System.out.println("During castle position: " + duringCastlePos);
+            //System.out.println("During castle position: " + duringCastlePos);
             r.updateLocation(new Move("" + r.getLocation().row() + "" + duringCastlePos));
-            System.out.println(r.getLocation().toString());
+            //System.out.println(r.getLocation().toString());
         }
     }
 

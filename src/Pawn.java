@@ -46,6 +46,20 @@ public class Pawn extends Piece {
         return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
+    public ArrayList<Move> genMovesScoring() {
+        ArrayList<Move> tentativeList = new ArrayList<>();
+        int offset;
+        if(color == 'w')
+            offset = 1;
+        else offset = -1;
+        //captures only
+        if(location.col() + 1 <= 7 && location.row() + offset >= 0 && location.row() + offset <= 7)
+            tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() + 1)));
+        if(location.col() - 1 >= 0 && location.row() + offset >= 0 && location.row() + offset <= 7)
+            tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() - 1)));
+        return tentativeList;
+    }
+
     public ArrayList<Move> genMoves() {
         ArrayList<Move> moveList = new ArrayList<>();
         ArrayList<Move> tentativeList = new ArrayList<>();
@@ -56,13 +70,13 @@ public class Pawn extends Piece {
         //captures evaluated first
         tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() + 1)));
         tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() - 1)));
-        //2*offset is for the pawns first move
+        //2*offset is for the pawn's first move
         tentativeList.add(new Move("" + (location.row() + offset) + "" + location.col()));
         tentativeList.add(new Move("" + (location.row() + 2*offset) + "" + location.col()));
 
-        for(Move move : tentativeList) {
-            if (validMove(move) && legalMove(move))
-                moveList.add(move);
+        for(Move m : tentativeList) {
+            if(validMove(m) && legalMove(m))
+                moveList.add(m);
         }
         return moveList;
     }

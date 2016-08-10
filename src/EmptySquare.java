@@ -24,6 +24,7 @@ public class EmptySquare extends Piece {
     public ArrayList<Move> genMoves() {
         return new ArrayList<Move>();
     }
+    public ArrayList<Move> genMovesScoring() { return new ArrayList<Move>(); }
     public char toChar() {
         return '-';
     }

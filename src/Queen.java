@@ -40,7 +40,7 @@ public class Queen extends Piece {
         return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
-    public ArrayList<Move> genMoves() {
+    public ArrayList<Move> genMovesScoring() {
         ArrayList<Move> moveList = new ArrayList<>();
         ArrayList<Move> tentativeList = new ArrayList<>();
 
@@ -65,11 +65,21 @@ public class Queen extends Piece {
         }
 
         for(Move move : tentativeList) {
-            if (validMove(move) && legalMove(move))
+            if(move.row() >= 0 && move.row() <= 7 && move.col() >= 0 && move.col() <= 7 && !jump(move))
                 moveList.add(move);
         }
 
         return moveList;
+    }
+
+    public ArrayList<Move> genMoves() {
+        ArrayList<Move> ml = genMovesScoring();
+        ArrayList<Move> legalList = new ArrayList<>();
+        for(Move m : ml) {
+            if(validMove(m) && legalMove(m)) //should add a check against capturing own piece outside of validMove
+                legalList.add(m);
+        }
+        return legalList;
     }
 
     public void move(Move move) {

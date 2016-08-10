@@ -63,6 +63,7 @@ public abstract class Piece {
     public abstract boolean validLegalMove(Move move);
 
     public abstract ArrayList<Move> genMoves();
+    public abstract ArrayList<Move> genMovesScoring();
 
     public void move(Move move) {
         if(validLegalMove(move)) {

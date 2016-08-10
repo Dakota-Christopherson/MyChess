@@ -24,7 +24,6 @@ public class Move{
         return gameBoard[row()][col()].getValue();
     }
 
-
     public int compareTo(Piece[][] gameBoard, Move m) {
         return gameBoard[row()][col()].getValue() - gameBoard[m.row()][m.col()].getValue();
     }
