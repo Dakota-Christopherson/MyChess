@@ -1,4 +1,6 @@
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Created by Cody on 6/15/2016.
@@ -9,7 +11,7 @@ public class AI {
     private int ply;
     private boolean turn;
     Move[][] killerMoves;
-
+    Hashtable<BigInteger, Double[]> transposition;
     private int killerCount = 3;
 
     public AI(Board board, char color, int ply) {
@@ -22,6 +24,10 @@ public class AI {
     }
 
     public String aiMove() {
+
+        transposition = new Hashtable<>(1299827);
+
+
         ArrayList<Piece> pieces;
         if(color == 'w')
             pieces = board.whitePieces;
@@ -73,12 +79,12 @@ public class AI {
 
         for(int i = 0; i < moveScores.length; i++) {
             for (int j = 0; j < moveScores[i].length; j++) {
-                System.out.println("Move score: " + String.format( "%10.3f",moveScores[i][j]) + ", move: " + "" +
+                System.out.println("Move score: " + String.format( "%8.3f",moveScores[i][j]) + ", move: " + "" +
                         pieces.get(i).getLocation().row() + "" + pieces.get(i).getLocation().col() + "" + moveList[i][j].row() + "" + moveList[i][j].col());
             }
         }
 
-        System.out.println("Score: " + String.format("%10.3f",moveScores[pieceIndex][moveIndex]) + ", move: " + finMove);
+        System.out.println("Score: " + String.format("%8.3f",moveScores[pieceIndex][moveIndex]) + ", move: " + finMove);
 
 
         return finMove;
@@ -87,6 +93,9 @@ public class AI {
     public double miniMax(Board board1, int depth, double alpha, double beta, boolean maximizingPlayer) {
         Stats.nodesEval++;
         if(depth == 0 || board1.gameOver()) {
+            /*BigInteger boardRep = board1.toBigInt();
+            if(transposition.containsKey(boardRep))
+                return transposition.get(boardRep)[0];*/
             return board1.getValue();
         }
 
@@ -108,7 +117,16 @@ public class AI {
                     int moveVal = move.getValue(placeholder.gameBoard); //destination piece value
 
                     placeholder.forceMove(p.getLocation().toString() + "" + moveList[i][j].toString());
-                    double v = miniMax(placeholder, depth - 1, alpha, beta, false);
+                    BigInteger placeholderBigInt = placeholder.toBigInt();
+                    Double v;
+                    //if it's been hashed and has more depth remaining than this one, use it
+                    if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] > depth)
+                        v = transposition.get(placeholderBigInt)[0];
+                    else { //otherwise hash it and use minimax to find the value
+                        v = miniMax(placeholder, depth - 1, alpha, beta, false);
+                        if (!transposition.containsKey(placeholderBigInt) || transposition.get(placeholderBigInt)[1] < depth)
+                            transposition.put(placeholderBigInt, new Double[]{v, depth * 1.0});
+                    }
                     bestValue = Math.max(bestValue, v);
 
 
@@ -139,7 +157,16 @@ public class AI {
                     Board placeholder = board1.cloneBoard();
                     Piece p = placeholder.blackPieces.get(i);
                     placeholder.forceMove(p.getLocation().toString() + "" + moveList[i][j].toString());
-                    double v = miniMax(placeholder, depth - 1, alpha, beta, true);
+                    BigInteger placeholderBigInt = placeholder.toBigInt();
+
+                    Double v;
+                    if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] > depth)
+                        v = transposition.get(placeholderBigInt)[0];
+                    else {
+                        v = miniMax(placeholder, depth - 1, alpha, beta, true);
+                        if (!transposition.containsKey(placeholderBigInt) || transposition.get(placeholderBigInt)[1] < depth)
+                            transposition.put(placeholderBigInt, new Double[]{v, depth * 1.0});
+                    }
                     bestValue = Math.min(bestValue, v);
 
 

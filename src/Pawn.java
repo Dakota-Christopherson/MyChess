@@ -7,15 +7,12 @@ public class Pawn extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
-    private Move location;
     private int value = 1;
     char color;
-    boolean hasMoved = false;
     boolean enPassantPoss = false;
 
     public Pawn(Board board, char color, Move location) {
         super(board, color, location);
-        this.location = location;
         classBoard = board;
         this.board = board.gameBoard; //please get better at naming things in advance
         this.color = color;
@@ -38,6 +35,17 @@ public class Pawn extends Piece {
         char colorDest = board[move.row()][move.col()].getColor();
         if((location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b' && colorDest == 'w') || (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w' && colorDest == 'b')){
             return true;
+        }
+        //enpassant checks
+        if(move.row() + 1 == 3) {
+            Piece blackTarget = board[move.row() + 1][move.col()];
+            if (location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b' && blackTarget instanceof Pawn && ((Pawn) blackTarget).enPassantPoss)
+                return true;
+        }
+        if(move.row() - 1 == 4) {
+            Piece whiteTarget = board[move.row() - 1][move.col()];
+            if (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w' && whiteTarget instanceof Pawn && ((Pawn) whiteTarget).enPassantPoss)
+                return true;
         }
         return false;
     }
@@ -72,7 +80,7 @@ public class Pawn extends Piece {
         tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() - 1)));
         //2*offset is for the pawn's first move
         tentativeList.add(new Move("" + (location.row() + offset) + "" + location.col()));
-        tentativeList.add(new Move("" + (location.row() + 2*offset) + "" + location.col()));
+        tentativeList.add(new Move("" + (location.row() + 2 * offset) + "" + location.col()));
 
         for(Move m : tentativeList) {
             if(validMove(m) && legalMove(m))
@@ -82,40 +90,35 @@ public class Pawn extends Piece {
     }
 
     public void move(Move move) {
+        if (board[move.row()][location.row()] instanceof EmptySquare && Math.abs(move.col() - location.col()) == 1) {
+            Piece removed;
+            if (color == 'w')
+                removed = board[move.row() - 1][move.col()];
+            else removed = board[move.row() + 1][move.col()]; //color == 'b'
+            board[removed.getLocation().row()][removed.getLocation().col()] = new EmptySquare(classBoard, removed.getLocation());
+            classBoard.remove(removed);
+        }
 
-            super.move(move);
-            //
-            //NOTE: NEED TO DO EN PASSANT CHECKING IN MAIN AS WELL, YOU LOSE YOUR CHANCE AFTER ONE MOVE
-            //
-            if(Math.abs(move.col() - location.col()) == 2)
-                enPassantPoss = true;
-            updateLocation(move);
-            hasMoved = true;
+        Move oldLoc = location;
+        super.move(move);
+        if (Math.abs(move.row() - oldLoc.row()) == 2)
+            enPassantPoss = true;
+        hasMoved = true;
 
-            if(color == 'w' && location.row() == 7) {
-                Queen newQ = new Queen(classBoard, 'w', location);
-                board[location.row()][location.col()] = newQ;
-                classBoard.remove(this);
-                classBoard.whitePieces.add(newQ);
-            }
+        if (color == 'w' && location.row() == 7) {
+            Queen newQ = new Queen(classBoard, 'w', location);
+            board[location.row()][location.col()] = newQ;
+            classBoard.remove(this);
+            classBoard.whitePieces.add(newQ);
+        }
 
-            if(color == 'b' && location.row() == 0) {
-                Queen newQ = new Queen(classBoard, 'b', location);
-                board[location.row()][location.col()] = newQ;
-                classBoard.remove(this);
-                classBoard.whitePieces.add(newQ);
-            }
+        if (color == 'b' && location.row() == 0) {
+            Queen newQ = new Queen(classBoard, 'b', location);
+            board[location.row()][location.col()] = newQ;
+            classBoard.remove(this);
+            classBoard.blackPieces.add(newQ);
+        }
 
-    }
-
-
-    public void updateLocation(Move move) {
-        super.updateLocation(move);
-        location = move;
-    }
-
-    public Move getLocation() {
-        return location;
     }
 
     public int getValue() {

@@ -4,10 +4,10 @@ import java.util.ArrayList;
  * Created by Cody on 6/4/2016.
  */
 public abstract class Piece {
-    boolean pieceHasMoved = false;
+    protected boolean hasMoved = false;
     private Piece[][] board;
     private Board classBoard;
-    private Move location;
+    protected Move location;
     private char color;
     private char name;
     private int value;
@@ -43,7 +43,6 @@ public abstract class Piece {
         int finalCol = move.col();
         int finalRow = move.row();
 
-
         while(initCol != finalCol || initRow != finalRow) {
 
             if(board[initRow][initCol] != this && board[initRow][initCol] != board[move.row()][move.col()] && !(board[initRow][initCol] instanceof EmptySquare))
@@ -66,14 +65,21 @@ public abstract class Piece {
     public abstract ArrayList<Move> genMovesScoring();
 
     public void move(Move move) {
-        if(validLegalMove(move)) {
             Piece placeholder = board[move.row()][move.col()];
             board[move.row()][move.col()] = this;
             board[location.row()][location.col()] = new EmptySquare(classBoard, location);
             updateLocation(move);
             classBoard.remove(placeholder);
-            pieceHasMoved = true;
-        }
+            hasMoved = true;
+
+            if(color == 'w')
+                for(Piece p : classBoard.blackPieces)
+                    if(p instanceof Pawn)
+                        ((Pawn) p).enPassantPoss = false;
+            if(color == 'b')
+                for(Piece p : classBoard.whitePieces)
+                    if(p instanceof Pawn)
+                        ((Pawn) p).enPassantPoss = false;
     }
     public boolean killKing(Move move){
         if(Character.toLowerCase(board[move.row()][move.col()].toChar()) == 'k')

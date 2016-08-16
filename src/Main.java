@@ -5,7 +5,6 @@ import java.util.Scanner;
  */
 
 
-//TODO: remove all location data from individual classes, remove endangersKing from King validMove, remove Move from all classes
 public class Main {
     public static void main(String[] args) {
         Board b1 = new Board();
@@ -19,11 +18,11 @@ public class Main {
             valid = false;
             whiteTurn = !whiteTurn;
             while(!valid) {
-                if(!whiteTurn) {
+                /*if(!whiteTurn) {
                     b1.parseMove(ai.aiMove());
                     valid = true;
                 }
-                else {
+                else */{
                     System.out.println("Please enter your move: ");
                     String candidateMove = scan.nextLine();
 
@@ -41,7 +40,7 @@ public class Main {
             }
 
             System.out.println("Nodes evaluated: " + Stats.nodesEval);
-            System.out.println("Board evaluation: " + String.format("%10.3f",b1.getValue()));
+            System.out.println("Board evaluation: " + String.format("%8.3f",b1.getValue()));
             Stats.nodesEval = 0;
             b1.printBoard();
         }

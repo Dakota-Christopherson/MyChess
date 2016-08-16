@@ -7,13 +7,11 @@ public class King extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
-    private Move location;
     private int value = 10000;
     char color;
 
     public King(Board board, char color, Move location) {
         super(board, color, location);
-        this.location = location;
         classBoard = board;
         this.board = board.gameBoard; //please get better at naming things in advance
         this.color = color;
@@ -30,7 +28,7 @@ public class King extends Piece {
             return true;
         }
         //move two to the left or to the right           no vertical movement                hasn't moved      not castling out of check
-        if(Math.abs(move.col() - location.col()) == 2 && move.row() - location.row() == 0 && !pieceHasMoved && !classBoard.endangersKing(color, location, this)) {
+        if(Math.abs(move.col() - location.col()) == 2 && move.row() - location.row() == 0 && !hasMoved && !classBoard.endangersKing(color, location, this)) {
 
             int duringCastlePos = move.col() + (location.col() - move.col())/2;
 
@@ -51,9 +49,9 @@ public class King extends Piece {
                     r2 = (Rook) p;
             }
 
-            if(r1 != null && Math.abs(r1.getLocation().col() - move.col()) <= 2 && !r1.pieceHasMoved)
+            if(r1 != null && Math.abs(r1.getLocation().col() - move.col()) <= 2 && !r1.hasMoved)
                 rookStationary = true;
-            if(r2 != null && Math.abs(r2.getLocation().col() - move.col()) <= 2 && !r2.pieceHasMoved)
+            if(r2 != null && Math.abs(r2.getLocation().col() - move.col()) <= 2 && !r2.hasMoved)
                 rookStationary = true;
             //checks for not castling through check
             if(rookStationary && !classBoard.endangersKing(color, new Move("" + location.row() + "" + duringCastlePos), this)) {
@@ -110,7 +108,6 @@ public class King extends Piece {
             castle(move);
         else {
             super.move(move);
-            updateLocation(move);
         }
     }
 
@@ -138,9 +135,9 @@ public class King extends Piece {
         updateLocation(move);
 
         Rook r = null;
-        if(r1 != null && Math.abs(r1.getLocation().col() - move.col()) <= 2 && !r1.pieceHasMoved)
+        if(r1 != null && Math.abs(r1.getLocation().col() - move.col()) <= 2 && !r1.hasMoved)
             r = r1;
-        if(r2 != null && Math.abs(r2.getLocation().col() - move.col()) <= 2 && !r2.pieceHasMoved)
+        if(r2 != null && Math.abs(r2.getLocation().col() - move.col()) <= 2 && !r2.hasMoved)
             r = r2;
 
         if(r != null) {
@@ -152,16 +149,6 @@ public class King extends Piece {
             r.updateLocation(new Move("" + r.getLocation().row() + "" + duringCastlePos));
             //System.out.println(r.getLocation().toString());
         }
-    }
-
-
-    public void updateLocation(Move move) {
-        super.updateLocation(move);
-        location = move;
-    }
-
-    public Move getLocation() {
-        return location;
     }
 
     public int getValue() {

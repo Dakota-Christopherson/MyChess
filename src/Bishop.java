@@ -7,13 +7,11 @@ public class Bishop extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
-    private Move location;
     private int value = 3;
     char color;
 
     public Bishop(Board board, char color, Move location) {
         super(board, color, location);
-        this.location = location;
         classBoard = board;
         this.board = board.gameBoard; //please get better at naming things in advance
         this.color = color;
@@ -65,24 +63,6 @@ public class Bishop extends Piece {
         }
         return legalList;
     }
-
-    public void move(Move move) {
-
-            super.move(move);
-            updateLocation(move);
-
-    }
-
-
-    public void updateLocation(Move move) {
-        super.updateLocation(move);
-        location = move;
-    }
-
-    public Move getLocation() {
-        return location;
-    }
-
     public int getValue() {
         return value;
     }

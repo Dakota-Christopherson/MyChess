@@ -221,5 +221,27 @@ public class Board {
         return moveList;
     }
 
-    
+    public BigInteger toBigInt() {
+        String s = "";
+        for(int i = 0; i < gameBoard.length; i++) {
+            for(int j = 0; j < gameBoard[i].length; j++) {
+                s += gameBoard[i][j].getValue();
+            }
+        }
+        return new BigInteger(s);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Board))
+            return false;
+        Board board = (Board) obj;
+        for(int i = 0; i < gameBoard.length; i++) {
+            for(int j = 0; j < gameBoard[i].length; i++) {
+                if(board.gameBoard[i][j].toChar() != gameBoard[i][j].toChar())
+                    return false;
+            }
+        }
+        return true;
+    }
 }
