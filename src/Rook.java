@@ -23,6 +23,8 @@ public class Rook extends Piece {
             name = 'R';
         else name = 'r';
     }
+
+    //legal as far as the piece's movement is concerned
     public boolean legalMove(Move move) {
         if(move.col() == location.col() || move.row() == location.row()) {
             return true;
@@ -30,10 +32,13 @@ public class Rook extends Piece {
         return false;
     }
 
+    //Required because checking endangersKing() in any of the other methods causes infinite loop
     public boolean validLegalMove(Move move) {
         return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
+
+    //Used to find which pieces it can attack or defend
     public ArrayList<Move> genMovesScoring() {
         ArrayList<Move> moveList = new ArrayList<>();
         ArrayList<Move> tentativeList = new ArrayList<>();

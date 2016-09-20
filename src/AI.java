@@ -11,7 +11,7 @@ public class AI {
     private int ply;
     private boolean turn;
     Move[][] killerMoves;
-    Hashtable<BigInteger, Double[]> transposition;
+    Hashtable<BigInteger, Double[]> transposition; //position 0 in array will be minimax value, 1 will be depth
     private int killerCount = 3;
 
     public AI(Board board, char color, int ply) {
@@ -24,7 +24,7 @@ public class AI {
     }
 
     public String aiMove() {
-
+        //arbitrarily large prime as the size
         transposition = new Hashtable<>(1299827);
 
 
@@ -45,6 +45,7 @@ public class AI {
                 String locString = pieces.get(i).getLocation().row() + "" + pieces.get(i).getLocation().col();
                 placeholder.forceMove("" + locString + "" + moveList[i][j].row() + moveList[i][j].col());
 
+                //Logic for turn: it will be true when AI is black because it just played all of the black moves above, then it's white's turn
                 moveScores[i][j] = miniMax(placeholder, ply, -Double.MAX_VALUE, Double.MAX_VALUE, turn);
             }
         }

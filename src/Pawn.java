@@ -24,6 +24,8 @@ public class Pawn extends Piece {
             name = 'P';
         else name = 'p';
     }
+
+    //legal as far as the piece's movement is concerned
     public boolean legalMove(Move move) {
         // |          same column     |                      nothing in front of it          |     only moving up one or two if it hasn't moved
         if(move.col() == location.col() && board[move.row()][move.col()].toChar() == '-' &&
@@ -50,10 +52,14 @@ public class Pawn extends Piece {
         return false;
     }
 
+
+    //Required because checking endangersKing() in any of the other methods causes infinite loop
     public boolean validLegalMove(Move move) {
         return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
+
+    //Used to find which pieces it can attack or defend
     public ArrayList<Move> genMovesScoring() {
         ArrayList<Move> tentativeList = new ArrayList<>();
         int offset;

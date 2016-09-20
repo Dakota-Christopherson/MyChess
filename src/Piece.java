@@ -18,6 +18,7 @@ public abstract class Piece {
         this.board = board.gameBoard; //please get better at naming things in advance
     }
 
+    //checks for out of bounds moves, jumping, and capturing own pieces
     public boolean validMove(Move move) {
         if(move.equals(location)) //can't move to the same place
             return false;

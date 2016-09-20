@@ -130,6 +130,9 @@ public class Board {
         return false;
     }
 
+
+    //bypasses any validity checks, used for optimization
+    //TODO: replace body with just move() to fix calculation errors with castling and enpassant
     public boolean forceMove(String m) {
         Move move1 = new Move("" + m.charAt(0) + "" + m.charAt(1)); //start
         Move move2 = new Move("" + m.charAt(2) + "" + m.charAt(3)); //dest
@@ -142,9 +145,9 @@ public class Board {
     }
 
     public double getValue() {
-
-        double defendModifier = .005;
-        double attackModifier = .01;
+        //designed to be small enough that it will never take precedence over captures
+        double defendModifier = .000005;
+        double attackModifier = .001;
 
 
         double blackScore = 0;

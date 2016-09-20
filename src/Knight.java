@@ -24,6 +24,8 @@ public class Knight extends Piece {
             name = 'N';
         else name = 'n';
     }
+
+    //legal as far as the piece's movement is concerned
     public boolean legalMove(Move move) {
         if((Math.abs(move.row() - location.row()) == 2 && Math.abs(move.col() - location.col()) == 1) || //the two valid knight move patterns
            (Math.abs(move.row() - location.row()) == 1 && Math.abs(move.col() - location.col()) == 2)) {
@@ -32,10 +34,13 @@ public class Knight extends Piece {
         return false;
     }
 
+    //Required because checking endangersKing() in any of the other methods causes infinite loop
     public boolean validLegalMove(Move move) {
         return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
+
+    //Used to find which pieces it can attack or defend
     public ArrayList<Move> genMovesScoring() {
         ArrayList<Move> moveList = new ArrayList<>();
         ArrayList<Move> tentativeList = new ArrayList<>();
