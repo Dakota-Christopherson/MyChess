@@ -1,0 +1,3 @@
+This was a personal project that took up a large portion of my summer. It was intended to help me learn about transposition tables, killer heuristics, move ordering, and alpha-beta pruning before using bitboards in place of arrays. It is not as organized as I would like, but it is by far the largest project I've worked on. My organization and design choices from the earliest commits to now have improved drastically and I expect that trend to continue when I find time to rewrite it using bitboards in C.
+
+To use: just run the main method and type in the console, moves are represented as RowColRowCol. 1030 would move the pawn at (1,0) to (3,0)
