@@ -18,11 +18,11 @@ public class Main {
             valid = false;
             whiteTurn = !whiteTurn;
             while(!valid) {
-                /*if(!whiteTurn) {
+                if(!whiteTurn) {
                     b1.parseMove(ai.aiMove());
                     valid = true;
                 }
-                else */{
+                else {
                     System.out.println("Please enter your move: ");
                     String candidateMove = scan.nextLine();
 
