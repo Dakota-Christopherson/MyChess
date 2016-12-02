@@ -3,8 +3,13 @@
  */
 public class Move{
     private String move;
-
+    private Move loc;
     public Move(String move) {
+        this.move = move;
+    }
+
+    public Move(String move, Move loc) {
+        this.loc = loc;
         this.move = move;
     }
 
@@ -14,6 +19,10 @@ public class Move{
 
     public int col() {
         return Character.getNumericValue(move.charAt(1));
+    }
+
+    public Move getLoc() {
+        return loc;
     }
 
     public boolean equals(Move m) {

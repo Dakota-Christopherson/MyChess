@@ -102,7 +102,7 @@ public class King extends Piece {
         ml.add(new Move("" + location.row() + "" + (location.col() - 2)));
         for(Move m : ml) {
             if(validMove(m) && legalMove(m)) //should add a check against capturing own piece outside of validMove
-                legalList.add(m);
+                legalList.add(new Move(m.row() + "" + m.col(), location));
         }
         return legalList;
     }

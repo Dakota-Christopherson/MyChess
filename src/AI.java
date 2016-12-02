@@ -24,6 +24,7 @@ public class AI {
     }
 
     public String aiMove() {
+        long startTime = System.nanoTime();
         //arbitrarily large prime as the size
         transposition = new Hashtable<>(1299827);
 
@@ -39,6 +40,7 @@ public class AI {
             moveScores[i] = new double[moveList[i].length];
         }
 
+        ArrayList<Thread> threads = new ArrayList<>();
         for(int i = 0; i < moveList.length; i++) {
             for(int j = 0; j < moveList[i].length; j++) {
                 Board placeholder = board.cloneBoard();
@@ -46,7 +48,24 @@ public class AI {
                 placeholder.forceMove("" + locString + "" + moveList[i][j].row() + moveList[i][j].col());
 
                 //Logic for turn: it will be true when AI is black because it just played all of the black moves above, then it's white's turn
-                moveScores[i][j] = miniMax(placeholder, ply, -Double.MAX_VALUE, Double.MAX_VALUE, turn);
+                final int i1 = i;
+                final int j1 = j;
+                Thread t = new Thread(new Runnable() {
+                    public void run() {
+                        moveScores[i1][j1] = miniMax(placeholder, ply, -Double.MAX_VALUE, Double.MAX_VALUE, turn);
+                    }
+                });
+                threads.add(t);
+            }
+        }
+        for(Thread t : threads) {
+            t.start();
+        }
+        for(Thread t : threads) {
+            try {
+                t.join();
+            } catch(InterruptedException e) {
+                System.out.println("interrupted");
             }
         }
 
@@ -87,7 +106,7 @@ public class AI {
 
         System.out.println("Score: " + String.format("%8.3f",moveScores[pieceIndex][moveIndex]) + ", move: " + finMove);
 
-
+        System.out.println("AIMove time: " + ((System.nanoTime() - startTime)/1000000) + " ms");
         return finMove;
     }
 
@@ -102,8 +121,11 @@ public class AI {
 
         if(maximizingPlayer) {
             double bestValue = -Double.MAX_VALUE;
-            Move[][] moveList = board1.getMoves('w');
 
+            long moveTime = System.nanoTime();
+            Move[][] moveList = board1.getMoves('w');
+            Stats.getMove += System.nanoTime() - moveTime;
+            Stats.getMoveAmt++;
 
             moveOrder(moveList, ply - depth);
 
@@ -114,14 +136,14 @@ public class AI {
                     Piece p = placeholder.whitePieces.get(i);
 
                     //used to keep value for killer move, if taken after forceMove it will just give the piece value
-                    Move move = new Move(moveList[i][j].toString());
+                    Move move = new Move (moveList[i][j].toString(), placeholder.whitePieces.get(i).getLocation());
                     int moveVal = move.getValue(placeholder.gameBoard); //destination piece value
 
                     placeholder.forceMove(p.getLocation().toString() + "" + moveList[i][j].toString());
                     BigInteger placeholderBigInt = placeholder.toBigInt();
                     Double v;
                     //if it's been hashed and has more depth remaining than this one, use it
-                    if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] > depth)
+                    if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] >= depth)
                         v = transposition.get(placeholderBigInt)[0];
                     else { //otherwise hash it and use minimax to find the value
                         v = miniMax(placeholder, depth - 1, alpha, beta, false);
@@ -147,8 +169,11 @@ public class AI {
         }
         else /*minimizing player*/ {
             Double bestValue = Double.MAX_VALUE;
-            Move[][] moveList = board1.getMoves('b');
 
+            long moveTime = System.nanoTime();
+            Move[][] moveList = board1.getMoves('b');
+            Stats.getMove += System.nanoTime() - moveTime;
+            Stats.getMoveAmt++;
 
             moveOrder(moveList, ply - depth);
 
@@ -161,7 +186,7 @@ public class AI {
                     BigInteger placeholderBigInt = placeholder.toBigInt();
 
                     Double v;
-                    if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] > depth)
+                    if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] >= depth)
                         v = transposition.get(placeholderBigInt)[0];
                     else {
                         v = miniMax(placeholder, depth - 1, alpha, beta, true);
@@ -181,6 +206,7 @@ public class AI {
     }
 
     public void moveOrder(Move[][] moveList, int killerMovesLoc) {
+        long startTime = System.nanoTime();
         //sort moves for each piece
         boolean killer = false;
         for(int piece = 0; piece < moveList.length; piece++) {
@@ -190,8 +216,8 @@ public class AI {
             for(int i = 0; i < moveList[piece].length; i++) {
                 for(int j = 0; j < killerCount; j++) {
                     if(killerMoves[killerMovesLoc][j] != null) {
-                        if (moveList[piece][i].toString().compareTo(killerMoves[killerMovesLoc][j].toString()) == 0) {
-                            moveVals[i] = 1.0;
+                        if (moveList[piece][i].getLoc() == killerMoves[killerMovesLoc][j].getLoc() && moveList[piece][i].toString().compareTo(killerMoves[killerMovesLoc][j].toString()) == 0) {
+                            moveVals[i] = 5.0;
                             killer = true;
                         }
                     }
@@ -205,7 +231,18 @@ public class AI {
             Move tmp;
             Double tmpVal;
             //sort moveVals and each piece's moveList
-            for(int i = 0; i < moveList[piece].length-1; i++) {
+            int j;
+            for(int i = 1; i < moveList[piece].length; i++) {
+                tmp = moveList[piece][i];
+                tmpVal = moveVals[i];
+                for(j = i; j >= 1 && tmpVal > moveVals[j-1]; j--) {
+                    moveVals[j] = moveVals[j-1];
+                    moveList[piece][j] = moveList[piece][j-1];
+                }
+                moveList[piece][j] = tmp;
+                moveVals[j] = tmpVal;
+            }
+            /*for(int i = 0; i < moveList[piece].length-1; i++) {
                 for(int j = 0; j < moveList[piece].length-1; j++) {
                     if(moveVals[j] < moveVals[j+1]) {
                         tmp = moveList[piece][j];
@@ -218,7 +255,7 @@ public class AI {
                         moveVals[j+1] = tmpVal;
                     }
                 }
-            }
+            }*/
         }
 
         //sort by piece using the highest valued move of each piece
@@ -231,7 +268,18 @@ public class AI {
 
         Move[] tmp;
         int tmpVal;
-        for(int i = 0; i < moveList.length-1; i++) {
+        int j;
+        for(int i = 1; i < moveList.length; i++) {
+            tmp = moveList[i];
+            tmpVal = ptrVals[i];
+            for(j = i; j >= 1 && tmpVal > ptrVals[j-1]; j--) {
+                ptrVals[j] = ptrVals[j-1];
+                moveList[j] = moveList[j-1];
+            }
+            moveList[j] = tmp;
+            ptrVals[j] = tmpVal;
+        }
+        /*for(int i = 0; i < moveList.length-1; i++) {
             for(int j = 0; j < moveList.length-1; j++) {
                 if(ptrVals[j] < ptrVals[j+1]){
                     tmp = moveList[j];
@@ -244,6 +292,8 @@ public class AI {
                     ptrVals[j+1] = tmpVal;
                 }
             }
-        }
+        }*/
+        Stats.sortTot += (System.nanoTime() - startTime);
+        Stats.sortAmt++;
     }
 }

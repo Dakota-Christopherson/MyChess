@@ -41,7 +41,13 @@ public class Main {
 
             System.out.println("Nodes evaluated: " + Stats.nodesEval);
             System.out.println("Board evaluation: " + String.format("%8.3f",b1.getValue()));
-            Stats.nodesEval = 0;
+            if(Stats.sortAmt != 0) {
+                System.out.println("Total sort time: " + Stats.sortTot);
+                System.out.println("Average sort time: " + (Stats.sortTot / Stats.sortAmt));
+                //System.out.println("Get move time: " + Stats.getMove);
+                //System.out.println("Average get move time: " + (Stats.getMove / Stats.getMoveAmt));
+            }
+            Stats.reset();
             b1.printBoard();
         }
 

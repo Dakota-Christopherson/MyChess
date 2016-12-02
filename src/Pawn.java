@@ -90,7 +90,7 @@ public class Pawn extends Piece {
 
         for(Move m : tentativeList) {
             if(validMove(m) && legalMove(m))
-                moveList.add(m);
+                moveList.add(new Move(m.row() + "" + m.col(), location));
         }
         return moveList;
     }

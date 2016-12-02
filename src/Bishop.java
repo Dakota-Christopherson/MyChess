@@ -63,7 +63,7 @@ public class Bishop extends Piece {
         ArrayList<Move> legalList = new ArrayList<>();
         for(Move m : ml) {
             if(validMove(m) && legalMove(m)) //should add a check against capturing own piece outside of validMove
-                legalList.add(m);
+                legalList.add(new Move(m.row() + "" + m.col(), location));
         }
         return legalList;
     }
