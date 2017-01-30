@@ -27,10 +27,15 @@ public class Board {
         whitePieces.add(new King(this,'w', new Move("04")));
         whitePieces.add(new Queen(this,'w', new Move("03")));
 
+        blackPieces.add(new Pawn(this,'b',new Move("63")));
+        blackPieces.add(new Pawn(this,'b',new Move("64")));
+        blackPieces.add(new Pawn(this,'b',new Move("62")));
+        blackPieces.add(new Pawn(this,'b',new Move("65")));
+        blackPieces.add(new Pawn(this,'b',new Move("61")));
+        blackPieces.add(new Pawn(this,'b',new Move("66")));
+        blackPieces.add(new Pawn(this,'b',new Move("60")));
+        blackPieces.add(new Pawn(this,'b',new Move("67")));
 
-        for(int i = 0; i < 8; i++) {
-            blackPieces.add(new Pawn(this,'b', new Move("6" + i)));
-        }
         blackPieces.add(new Rook(this,'b',new Move("70")));
         blackPieces.add(new Rook(this,'b',new Move("77")));
         blackPieces.add(new Knight(this,'b',new Move("71")));
@@ -185,6 +190,7 @@ public class Board {
     }
 
     public Board cloneBoard() {
+        long start = System.nanoTime();
         Board clonedBoard = new Board();
         //empty the piece lists
         clonedBoard.blackPieces = new ArrayList<>();
@@ -195,13 +201,19 @@ public class Board {
                 Piece newPiece = gameBoard[i][j].clone(clonedBoard);
                 clonedBoard.gameBoard[i][j] = newPiece;
                 //fix the piece lists
-                if(newPiece.getColor() == 'w')
-                    clonedBoard.whitePieces.add(newPiece);
-                else if(newPiece.getColor() == 'b')
-                    clonedBoard.blackPieces.add(newPiece);
+                if (newPiece.getColor() != '-') {
+                    if (newPiece.getColor() == 'w') {
+                        clonedBoard.whitePieces.add(newPiece);
+                    }
+                    else {
+                        clonedBoard.blackPieces.add(newPiece);
+                    }
+                }
             }
         }
 
+        Stats.cloneTime += System.nanoTime() - start;
+        Stats.cloneAmt++;
         return clonedBoard;
     }
 
@@ -214,12 +226,12 @@ public class Board {
         }
         Move[][] moveList = new Move[pieceList.size()][];
         for(int i = 0; i < moveList.length; i++) {
-            Object[] pieceMoves = pieceList.get(i).genMoves().toArray();
-            Move[] placeholder = new Move[pieceMoves.length];
-            for(int j = 0; j <  placeholder.length; j++) {
-                placeholder[j] = (Move)pieceMoves[j];
+            ArrayList<Move> pieceMoves = pieceList.get(i).genMoves();
+            int moveListLength = pieceMoves.size();
+            moveList[i] = new Move[moveListLength];
+            for(int j = 0; j <  moveListLength; j++) {
+               moveList[i][j] = pieceMoves.get(j);
             }
-            moveList[i] = placeholder;
         }
         return moveList;
     }

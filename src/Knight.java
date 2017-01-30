@@ -63,10 +63,21 @@ public class Knight extends Piece {
     }
 
     public ArrayList<Move> genMoves() {
-        ArrayList<Move> ml = genMovesScoring();
+        ArrayList<Move> tentativeList = new ArrayList<>();
         ArrayList<Move> legalList = new ArrayList<>();
-        for(Move m : ml) {
-            if(validMove(m) && legalMove(m)) //should add a check against capturing own piece outside of validMove
+
+        tentativeList.add(new Move("" + (location.row() + 1) + "" + (location.col() + 2)));
+        tentativeList.add(new Move("" + (location.row() - 1) + "" + (location.col() + 2)));
+        tentativeList.add(new Move("" + (location.row() + 1) + "" + (location.col() - 2)));
+        tentativeList.add(new Move("" + (location.row() - 1) + "" + (location.col() - 2)));
+
+        tentativeList.add(new Move("" + (location.row() + 2) + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + (location.row() - 2) + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + (location.row() + 2) + "" + (location.col() - 1)));
+        tentativeList.add(new Move("" + (location.row() - 2) + "" + (location.col() - 1)));
+
+        for(Move m : tentativeList) {
+            if(validMove(m))
                 legalList.add(new Move(m.row() + "" + m.col(), location));
         }
         return legalList;

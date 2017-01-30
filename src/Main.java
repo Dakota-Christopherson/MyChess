@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Board b1 = new Board();
-        AI ai = new AI(b1, 'b', 4);
+        AI ai = new AI(b1, 'b', 4 );
         b1.printBoard();
         Scanner scan = new Scanner(System.in);
 
@@ -42,10 +42,16 @@ public class Main {
             System.out.println("Nodes evaluated: " + Stats.nodesEval);
             System.out.println("Board evaluation: " + String.format("%8.3f",b1.getValue()));
             if(Stats.sortAmt != 0) {
-                System.out.println("Total sort time: " + Stats.sortTot);
-                System.out.println("Average sort time: " + (Stats.sortTot / Stats.sortAmt));
-                //System.out.println("Get move time: " + Stats.getMove);
-                //System.out.println("Average get move time: " + (Stats.getMove / Stats.getMoveAmt));
+                long aiMoveTimeRaw = (Stats.aiMoveEnd - Stats.aiMoveStart);
+                long aiMoveTime = aiMoveTimeRaw / 1000000;
+                System.out.println("AIMove time: " + aiMoveTime + "ms");
+                System.out.println(String.format("%2.3f", ((double)Stats.sortTot)*100/aiMoveTimeRaw) + "% of time spent on sort");
+                System.out.println(String.format("%2.3f", ((double)Stats.cloneTime)*100/aiMoveTimeRaw) + "% of time spent on clone");
+                System.out.println(Stats.cloneTime / 1000000 + "ms spent cloning");
+                System.out.println(String.format("%2.3f", ((double)Stats.getMove)*100/aiMoveTimeRaw) + "% of time spent on getMoves");
+                System.out.println(String.format("%2.3f", ((double)Stats.getValueTime)*100/aiMoveTimeRaw) + "% of time spent on getValue");
+                System.out.println(Stats.hashTableHits + " hash table hits");
+                System.out.println(Stats.hashTableSuccess + " hash table successes");
             }
             Stats.reset();
             b1.printBoard();

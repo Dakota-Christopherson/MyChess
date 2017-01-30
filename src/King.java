@@ -95,13 +95,26 @@ public class King extends Piece {
     }
 
     public ArrayList<Move> genMoves() {
-        ArrayList<Move> ml = genMovesScoring();
         ArrayList<Move> legalList = new ArrayList<>();
+        ArrayList<Move> tentativeList = new ArrayList<>();
+
+        //diagonals
+        tentativeList.add(new Move("" + (location.row() + 1) + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + (location.row() + 1) + "" + (location.col() - 1)));
+        tentativeList.add(new Move("" + (location.row() - 1) + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + (location.row() - 1) + "" + (location.col() - 1)));
+
+        //straights
+        tentativeList.add(new Move("" + (location.row() + 1) + "" + location.col()));
+        tentativeList.add(new Move("" + (location.row() - 1) + "" + location.col()));
+        tentativeList.add(new Move("" + location.row() + "" + (location.col() + 1)));
+        tentativeList.add(new Move("" + location.row() + "" + (location.col() - 1)));
+
         //castles
-        ml.add(new Move("" + location.row() + "" + (location.col() + 2)));
-        ml.add(new Move("" + location.row() + "" + (location.col() - 2)));
-        for(Move m : ml) {
-            if(validMove(m) && legalMove(m)) //should add a check against capturing own piece outside of validMove
+        tentativeList.add(new Move("" + location.row() + "" + (location.col() + 2)));
+        tentativeList.add(new Move("" + location.row() + "" + (location.col() - 2)));
+        for(Move m : tentativeList) {
+            if(validMove(m) && legalMove(m))
                 legalList.add(new Move(m.row() + "" + m.col(), location));
         }
         return legalList;

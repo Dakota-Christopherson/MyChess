@@ -56,10 +56,16 @@ public class Rook extends Piece {
     }
 
     public ArrayList<Move> genMoves() {
-        ArrayList<Move> ml = genMovesScoring();
         ArrayList<Move> legalList = new ArrayList<>();
-        for(Move m : ml) {
-            if(validMove(m) && legalMove(m)) //should add a check against capturing own piece outside of validMove
+        ArrayList<Move> tentativeList = new ArrayList<>();
+        for(int c = 0; c < 8; c++) {
+            tentativeList.add(new Move("" + location.row() + "" + c));
+        }
+        for(int r = 0; r < 8; r++) {
+            tentativeList.add(new Move("" + r + "" + location.col()));
+        }
+        for(Move m : tentativeList) {
+            if(validMove(m))
                 legalList.add(new Move(m.row() + "" + m.col(), location));
         }
         return legalList;

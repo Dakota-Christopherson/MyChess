@@ -25,16 +25,16 @@ public abstract class Piece {
         if(move.row() < 0 || move.row() > 7 || move.col() < 0 || move.col() > 7) //out of bounds
             return false;
 
-        Piece dest = board[move.row()][move.col()];
-        ArrayList<Piece> pieces;
-        if(color == 'w')
-            pieces = classBoard.whitePieces;
-        else pieces = classBoard.blackPieces;
-        if(pieces.contains(dest))  //land on same colored piece
+
+        if(friendlyCapture(move))  //land on same colored piece
             return false;
 
         return this instanceof Knight || !jump(move);
 
+    }
+
+    public boolean friendlyCapture(Move move) {
+        return color == board[move.row()][move.col()].getColor();
     }
 
     public boolean jump(Move move) {

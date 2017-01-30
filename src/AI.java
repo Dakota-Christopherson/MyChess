@@ -11,7 +11,7 @@ public class AI {
     private int ply;
     private boolean turn;
     Move[][] killerMoves;
-    Hashtable<BigInteger, Double[]> transposition; //position 0 in array will be minimax value, 1 will be depth
+    Hashtable<BigInteger, double[]> transposition; //position 0 in array will be minimax value, 1 will be depth
     private int killerCount = 3;
 
     public AI(Board board, char color, int ply) {
@@ -24,7 +24,7 @@ public class AI {
     }
 
     public String aiMove() {
-        long startTime = System.nanoTime();
+        Stats.aiMoveStart = System.nanoTime();
         //arbitrarily large prime as the size
         transposition = new Hashtable<>(1299827);
 
@@ -106,7 +106,7 @@ public class AI {
 
         System.out.println("Score: " + String.format("%8.3f",moveScores[pieceIndex][moveIndex]) + ", move: " + finMove);
 
-        System.out.println("AIMove time: " + ((System.nanoTime() - startTime)/1000000) + " ms");
+        Stats.aiMoveEnd = System.nanoTime();
         return finMove;
     }
 
@@ -114,9 +114,17 @@ public class AI {
         Stats.nodesEval++;
         if(depth == 0 || board1.gameOver()) {
             /*BigInteger boardRep = board1.toBigInt();
-            if(transposition.containsKey(boardRep))
-                return transposition.get(boardRep)[0];*/
-            return board1.getValue();
+            if(transposition.containsKey(boardRep)) {
+                Stats.hashTableHits++;
+                return transposition.get(boardRep)[0];
+            }*/
+            Stats.getValueAmt += 1;
+
+            long start = System.nanoTime();
+            double val = board1.getValue();
+            //transposition.put(boardRep, new double[] {val, 0.0});
+            Stats.getValueTime += System.nanoTime() - start;
+            return val;
         }
 
         if(maximizingPlayer) {
@@ -140,18 +148,23 @@ public class AI {
                     int moveVal = move.getValue(placeholder.gameBoard); //destination piece value
 
                     placeholder.forceMove(p.getLocation().toString() + "" + moveList[i][j].toString());
-                    BigInteger placeholderBigInt = placeholder.toBigInt();
-                    Double v;
+                    //BigInteger placeholderBigInt = placeholder.toBigInt();
+                    double v;
+                    boolean taken = false;
                     //if it's been hashed and has more depth remaining than this one, use it
-                    if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] >= depth)
+                    /*if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] >= depth) {
                         v = transposition.get(placeholderBigInt)[0];
-                    else { //otherwise hash it and use minimax to find the value
+                        Stats.hashTableHits++;
+                        taken = true;
+                    }*/
+                    //else { //otherwise hash it and use minimax to find the value
                         v = miniMax(placeholder, depth - 1, alpha, beta, false);
-                        if (!transposition.containsKey(placeholderBigInt) || transposition.get(placeholderBigInt)[1] < depth)
-                            transposition.put(placeholderBigInt, new Double[]{v, depth * 1.0});
-                    }
+                        //if (!transposition.containsKey(placeholderBigInt) || transposition.get(placeholderBigInt)[1] < depth)
+                         //   transposition.put(placeholderBigInt, new double[]{v, depth * 1.0});
+                    //}
                     bestValue = Math.max(bestValue, v);
-
+                    //if (taken && bestValue == v)
+                       // Stats.hashTableSuccess++;
 
                     alpha = Math.max(alpha, bestValue);
                     if(beta <= alpha) {//beta cutoff
@@ -168,7 +181,7 @@ public class AI {
             return bestValue;
         }
         else /*minimizing player*/ {
-            Double bestValue = Double.MAX_VALUE;
+            double bestValue = Double.MAX_VALUE;
 
             long moveTime = System.nanoTime();
             Move[][] moveList = board1.getMoves('b');
@@ -183,18 +196,23 @@ public class AI {
                     Board placeholder = board1.cloneBoard();
                     Piece p = placeholder.blackPieces.get(i);
                     placeholder.forceMove(p.getLocation().toString() + "" + moveList[i][j].toString());
-                    BigInteger placeholderBigInt = placeholder.toBigInt();
+                    //BigInteger placeholderBigInt = placeholder.toBigInt();
 
-                    Double v;
-                    if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] >= depth)
-                        v = transposition.get(placeholderBigInt)[0];
-                    else {
+                    double v;
+                    //boolean taken = false;
+                    //if(transposition.containsKey(placeholderBigInt) && transposition.get(placeholderBigInt)[1] >= depth) {
+                        //Stats.hashTableHits++;
+                        //v = transposition.get(placeholderBigInt)[0];
+                        //taken = true;
+                    //}
+                   // else {
                         v = miniMax(placeholder, depth - 1, alpha, beta, true);
-                        if (!transposition.containsKey(placeholderBigInt) || transposition.get(placeholderBigInt)[1] < depth)
-                            transposition.put(placeholderBigInt, new Double[]{v, depth * 1.0});
-                    }
+                       // if (!transposition.containsKey(placeholderBigInt) || transposition.get(placeholderBigInt)[1] < depth)
+                         //   transposition.put(placeholderBigInt, new double[]{v, depth * 1.0});
+                   // }
                     bestValue = Math.min(bestValue, v);
-
+                    //if(taken && v == bestValue)
+                     //   Stats.hashTableSuccess++;
 
                     beta = Math.min(beta, bestValue);
                     if(beta <= alpha)
@@ -211,7 +229,7 @@ public class AI {
         boolean killer = false;
         for(int piece = 0; piece < moveList.length; piece++) {
 
-            Double[] moveVals = new Double[moveList[piece].length];
+            double[] moveVals = new double[moveList[piece].length];
             //initialize moveVals
             for(int i = 0; i < moveList[piece].length; i++) {
                 for(int j = 0; j < killerCount; j++) {
@@ -229,7 +247,7 @@ public class AI {
 
 
             Move tmp;
-            Double tmpVal;
+            double tmpVal;
             //sort moveVals and each piece's moveList
             int j;
             for(int i = 1; i < moveList[piece].length; i++) {

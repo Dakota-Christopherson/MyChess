@@ -85,8 +85,8 @@ public class Pawn extends Piece {
         tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() + 1)));
         tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() - 1)));
         //2*offset is for the pawn's first move
-        tentativeList.add(new Move("" + (location.row() + offset) + "" + location.col()));
         tentativeList.add(new Move("" + (location.row() + 2 * offset) + "" + location.col()));
+        tentativeList.add(new Move("" + (location.row() + offset) + "" + location.col()));
 
         for(Move m : tentativeList) {
             if(validMove(m) && legalMove(m))
