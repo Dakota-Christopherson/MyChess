@@ -60,7 +60,7 @@ public abstract class Piece {
         return false;
     }
 
-    public abstract boolean validLegalMove(Move move);
+    public abstract boolean finalMoveCheck(Move move);
 
     public abstract ArrayList<Move> genMoves();
     public abstract ArrayList<Move> genMovesScoring();

@@ -31,7 +31,7 @@ public class EmptySquare extends Piece {
     public Move getLocation(){
         return location;
     }
-    public boolean validLegalMove(Move move) {
+    public boolean finalMoveCheck(Move move) {
         return false;
     }
     public EmptySquare clone(Board newBoard) {

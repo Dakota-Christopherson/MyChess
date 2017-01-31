@@ -33,7 +33,7 @@ public class Bishop extends Piece {
     }
 
     //Required because checking endangersKing() in any of the other methods causes infinite loop
-    public boolean validLegalMove(Move move) {
+    public boolean finalMoveCheck(Move move) {
         return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
@@ -64,16 +64,23 @@ public class Bishop extends Piece {
         int offsetCol = 1;
         int offsetRow = 1;
         while(location.col() + offsetCol < 8 || location.row() + offsetRow < 8 || location.col() - offsetCol >= 0 || location.row() - offsetRow >= 0) {
-            tentativeList.add(new Move("" + (offsetRow + location.row()) + "" + (offsetCol + location.col())));
-            tentativeList.add(new Move("" + (location.row() - offsetRow) + "" + (location.col() - offsetCol)));
-            tentativeList.add(new Move("" + (location.row() + offsetRow) + "" + (location.col() - offsetCol)));
-            tentativeList.add(new Move("" + (location.row() - offsetRow) + "" + (location.col() + offsetCol)));
+            if(offsetRow + location.row() < 8 && location.col() + offsetCol < 8)
+                tentativeList.add(new Move("" + (location.row() + offsetRow) + "" + (location.col() + offsetCol)));
+            if(location.row() - offsetRow > 0 && location.col() - offsetCol > 0)
+                tentativeList.add(new Move("" + (location.row() - offsetRow) + "" + (location.col() - offsetCol)));
+            if(location.row() + offsetRow < 8 && location.col() - offsetCol > 0)
+                tentativeList.add(new Move("" + (location.row() + offsetRow) + "" + (location.col() - offsetCol)));
+            if(location.row() - offsetRow > 0 && location.col() + offsetCol < 8)
+                tentativeList.add(new Move("" + (location.row() - offsetRow) + "" + (location.col() + offsetCol)));
+
             offsetCol++;
             offsetRow++;
         }
         for(Move m : tentativeList) {
-            if(validMove(m))
+            if(validMove(m)) {
+
                 legalList.add(new Move(m.row() + "" + m.col(), location));
+            }
         }
         return legalList;
     }

@@ -33,7 +33,7 @@ public class Rook extends Piece {
     }
 
     //Required because checking endangersKing() in any of the other methods causes infinite loop
-    public boolean validLegalMove(Move move) {
+    public boolean finalMoveCheck(Move move) {
         return validMove(move) && legalMove(move) && !classBoard.endangersKing(color, move, this);
     }
 
