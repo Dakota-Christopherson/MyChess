@@ -20,34 +20,38 @@ public class Pawn extends Piece {
     }
 
     private void pickColor(char color) {
-        if(color == 'w')
+        if (color == 'w') {
             name = 'P';
-        else name = 'p';
+        } else {
+            name = 'p';
+        }
     }
 
     //legal as far as the piece's movement is concerned
     public boolean legalMove(Move move) {
         // |          same column     |                      nothing in front of it          |     only moving up one or two if it hasn't moved
-        if(move.col() == location.col() && board[move.row()][move.col()].toChar() == '-' &&
+        if (move.col() == location.col() && board[move.row()][move.col()].toChar() == '-' &&
                 (((location.row() - move.row() == 1 || (location.row() - move.row() == 2 && !hasMoved)) && color == 'b') || //black
-                ((location.row() - move.row() == -1 || (location.row() - move.row() == -2 && !hasMoved)) && color == 'w'))) { //white
+                        ((location.row() - move.row() == -1 || (location.row() - move.row() == -2 && !hasMoved)) && color == 'w'))) { //white
             return true;
         }
         // |           move up one           |         column shifts one
         char colorDest = board[move.row()][move.col()].getColor();
-        if((location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b' && colorDest == 'w') || (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w' && colorDest == 'b')){
+        if ((location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b' && colorDest == 'w') || (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w' && colorDest == 'b')) {
             return true;
         }
         //enpassant checks
-        if(move.row() + 1 == 3) {
+        if (move.row() + 1 == 3) {
             Piece blackTarget = board[move.row() + 1][move.col()];
-            if (location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b' && blackTarget instanceof Pawn && ((Pawn) blackTarget).enPassantPoss)
+            if (location.row() - move.row() == 1 && Math.abs(move.col() - location.col()) == 1 && color == 'b' && blackTarget instanceof Pawn && ((Pawn) blackTarget).enPassantPoss) {
                 return true;
+            }
         }
-        if(move.row() - 1 == 4) {
+        if (move.row() - 1 == 4) {
             Piece whiteTarget = board[move.row() - 1][move.col()];
-            if (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w' && whiteTarget instanceof Pawn && ((Pawn) whiteTarget).enPassantPoss)
+            if (location.row() - move.row() == -1 && Math.abs(move.col() - location.col()) == 1 && color == 'w' && whiteTarget instanceof Pawn && ((Pawn) whiteTarget).enPassantPoss) {
                 return true;
+            }
         }
         return false;
     }
@@ -63,14 +67,18 @@ public class Pawn extends Piece {
     public ArrayList<Move> genMovesScoring() {
         ArrayList<Move> tentativeList = new ArrayList<>();
         int offset;
-        if(color == 'w')
+        if (color == 'w') {
             offset = 1;
-        else offset = -1;
+        } else {
+            offset = -1;
+        }
         //captures only
-        if(location.col() + 1 <= 7 && location.row() + offset >= 0 && location.row() + offset <= 7)
+        if (location.col() + 1 <= 7 && location.row() + offset >= 0 && location.row() + offset <= 7) {
             tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() + 1)));
-        if(location.col() - 1 >= 0 && location.row() + offset >= 0 && location.row() + offset <= 7)
+        }
+        if (location.col() - 1 >= 0 && location.row() + offset >= 0 && location.row() + offset <= 7) {
             tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() - 1)));
+        }
         return tentativeList;
     }
 
@@ -78,9 +86,11 @@ public class Pawn extends Piece {
         ArrayList<Move> moveList = new ArrayList<>();
         ArrayList<Move> tentativeList = new ArrayList<>();
         int offset;
-        if(color == 'w')
+        if (color == 'w') {
             offset = 1;
-        else offset = -1;
+        } else {
+            offset = -1;
+        }
         //captures evaluated first
         tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() + 1)));
         tentativeList.add(new Move("" + (location.row() + offset) + "" + (location.col() - 1)));
@@ -88,9 +98,10 @@ public class Pawn extends Piece {
         tentativeList.add(new Move("" + (location.row() + 2 * offset) + "" + location.col()));
         tentativeList.add(new Move("" + (location.row() + offset) + "" + location.col()));
 
-        for(Move m : tentativeList) {
-            if(validMove(m) && legalMove(m))
+        for (Move m : tentativeList) {
+            if (validMove(m) && legalMove(m)) {
                 moveList.add(new Move(m.row() + "" + m.col(), location));
+            }
         }
         return moveList;
     }
@@ -98,17 +109,20 @@ public class Pawn extends Piece {
     public void move(Move move) {
         if (board[move.row()][location.row()] instanceof EmptySquare && Math.abs(move.col() - location.col()) == 1) {
             Piece removed;
-            if (color == 'w')
+            if (color == 'w') {
                 removed = board[move.row() - 1][move.col()];
-            else removed = board[move.row() + 1][move.col()]; //color == 'b'
+            } else {
+                removed = board[move.row() + 1][move.col()];
+            } //color == 'b'
             board[removed.getLocation().row()][removed.getLocation().col()] = new EmptySquare(classBoard, removed.getLocation());
             classBoard.remove(removed);
         }
 
         Move oldLoc = location;
         super.move(move);
-        if (Math.abs(move.row() - oldLoc.row()) == 2)
+        if (Math.abs(move.row() - oldLoc.row()) == 2) {
             enPassantPoss = true;
+        }
         hasMoved = true;
 
         if (color == 'w' && location.row() == 7) {
@@ -131,7 +145,7 @@ public class Pawn extends Piece {
         return value;
     }
 
-    public char toChar(){
+    public char toChar() {
         return name;
     }
 

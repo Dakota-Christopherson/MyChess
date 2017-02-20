@@ -11,6 +11,7 @@ public abstract class Piece {
     private char color;
     private char name;
     private int value;
+
     public Piece(Board board, char color, Move location) {
         this.color = color;
         this.location = location;
@@ -20,14 +21,18 @@ public abstract class Piece {
 
     //checks for out of bounds moves, jumping, and capturing own pieces
     public boolean validMove(Move move) {
-        if(move.equals(location)) //can't move to the same place
+        if (move.equals(location)) { //can't move to the same place
             return false;
-        if(move.row() < 0 || move.row() > 7 || move.col() < 0 || move.col() > 7) //out of bounds
+        }
+
+        if (move.row() < 0 || move.row() > 7 || move.col() < 0 || move.col() > 7) { //out of bounds
             return false;
+        }
 
 
-        if(friendlyCapture(move))  //land on same colored piece
+        if (friendlyCapture(move)) {  //land on same colored piece
             return false;
+        }
 
         return this instanceof Knight || !jump(move);
 
@@ -44,18 +49,21 @@ public abstract class Piece {
         int finalCol = move.col();
         int finalRow = move.row();
 
-        while(initCol != finalCol || initRow != finalRow) {
+        while (initCol != finalCol || initRow != finalRow) {
 
-            if(board[initRow][initCol] != this && board[initRow][initCol] != board[move.row()][move.col()] && !(board[initRow][initCol] instanceof EmptySquare))
+            if (board[initRow][initCol] != this && board[initRow][initCol] != board[move.row()][move.col()] && !(board[initRow][initCol] instanceof EmptySquare)) {
                 return true;
-            if(initCol < finalCol)
+            }
+            if (initCol < finalCol) {
                 initCol++;
-            else if(initCol > finalCol)
+            } else if (initCol > finalCol) {
                 initCol--;
-            if(initRow < finalRow)
+            }
+            if (initRow < finalRow) {
                 initRow++;
-            else if(initRow > finalRow)
+            } else if (initRow > finalRow) {
                 initRow--;
+            }
         }
         return false;
     }
@@ -63,29 +71,34 @@ public abstract class Piece {
     public abstract boolean finalMoveCheck(Move move);
 
     public abstract ArrayList<Move> genMoves();
+
     public abstract ArrayList<Move> genMovesScoring();
 
     public void move(Move move) {
-            Piece placeholder = board[move.row()][move.col()];
-            board[move.row()][move.col()] = this;
-            board[location.row()][location.col()] = new EmptySquare(classBoard, location);
-            updateLocation(move);
-            classBoard.remove(placeholder);
-            hasMoved = true;
+        Piece placeholder = board[move.row()][move.col()];
+        board[move.row()][move.col()] = this;
+        board[location.row()][location.col()] = new EmptySquare(classBoard, location);
+        updateLocation(move);
+        classBoard.remove(placeholder);
+        hasMoved = true;
 
-            if(color == 'w')
-                for(Piece p : classBoard.blackPieces)
-                    if(p instanceof Pawn)
-                        ((Pawn) p).enPassantPoss = false;
-            if(color == 'b')
-                for(Piece p : classBoard.whitePieces)
-                    if(p instanceof Pawn)
-                        ((Pawn) p).enPassantPoss = false;
+        if (color == 'w') {
+            for (Piece p : classBoard.blackPieces) {
+                if (p instanceof Pawn) {
+                    ((Pawn) p).enPassantPoss = false;
+                }
+            }
+        } else if (color == 'b') {
+            for (Piece p : classBoard.whitePieces) {
+                if (p instanceof Pawn) {
+                    ((Pawn) p).enPassantPoss = false;
+                }
+            }
+        }
     }
-    public boolean killKing(Move move){
-        if(Character.toLowerCase(board[move.row()][move.col()].toChar()) == 'k')
-            return true;
-        return false;
+
+    public boolean killKing(Move move) {
+        return Character.toLowerCase(board[move.row()][move.col()].toChar()) == 'k';
     }
 
     public void updateLocation(Move move) {
@@ -98,7 +111,7 @@ public abstract class Piece {
 
     public abstract int getValue();
 
-    public char toChar(){
+    public char toChar() {
         return name;
     }
 

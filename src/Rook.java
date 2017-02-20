@@ -19,14 +19,16 @@ public class Rook extends Piece {
     }
 
     private void pickColor(char color) {
-        if(color == 'w')
+        if (color == 'w') {
             name = 'R';
-        else name = 'r';
+        } else {
+            name = 'r';
+        }
     }
 
     //legal as far as the piece's movement is concerned
     public boolean legalMove(Move move) {
-        if(move.col() == location.col() || move.row() == location.row()) {
+        if (move.col() == location.col() || move.row() == location.row()) {
             return true;
         }
         return false;
@@ -42,15 +44,16 @@ public class Rook extends Piece {
     public ArrayList<Move> genMovesScoring() {
         ArrayList<Move> moveList = new ArrayList<>();
         ArrayList<Move> tentativeList = new ArrayList<>();
-        for(int c = 0; c < 8; c++) {
+        for (int c = 0; c < 8; c++) {
             tentativeList.add(new Move("" + location.row() + "" + c));
         }
-        for(int r = 0; r < 8; r++) {
+        for (int r = 0; r < 8; r++) {
             tentativeList.add(new Move("" + r + "" + location.col()));
         }
-        for(Move move : tentativeList) {
-            if (!jump(move))
+        for (Move move : tentativeList) {
+            if (!jump(move)) {
                 moveList.add(move);
+            }
         }
         return moveList;
     }
@@ -58,15 +61,16 @@ public class Rook extends Piece {
     public ArrayList<Move> genMoves() {
         ArrayList<Move> legalList = new ArrayList<>();
         ArrayList<Move> tentativeList = new ArrayList<>();
-        for(int c = 0; c < 8; c++) {
+        for (int c = 0; c < 8; c++) {
             tentativeList.add(new Move("" + location.row() + "" + c));
         }
-        for(int r = 0; r < 8; r++) {
+        for (int r = 0; r < 8; r++) {
             tentativeList.add(new Move("" + r + "" + location.col()));
         }
-        for(Move m : tentativeList) {
-            if(validMove(m))
+        for (Move m : tentativeList) {
+            if (validMove(m)) {
                 legalList.add(new Move(m.row() + "" + m.col(), location));
+            }
         }
         return legalList;
     }
@@ -75,7 +79,7 @@ public class Rook extends Piece {
         return value;
     }
 
-    public char toChar(){
+    public char toChar() {
         return name;
     }
 

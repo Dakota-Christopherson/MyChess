@@ -19,44 +19,51 @@ public class King extends Piece {
     }
 
     private void pickColor(char color) {
-        if(color == 'w')
+        if (color == 'w') {
             name = 'K';
-        else name = 'k';
+        } else {
+            name = 'k';
+        }
     }
 
     //legal as far as the piece's movement is concerned
     public boolean legalMove(Move move) {
-        if(Math.abs(move.row() - location.row()) <= 1 && Math.abs(move.col() - location.col()) <= 1) { //valid king move
+        if (Math.abs(move.row() - location.row()) <= 1 && Math.abs(move.col() - location.col()) <= 1) { //valid king move
             return true;
         }
         //move two to the left or to the right           no vertical movement                hasn't moved      not castling out of check
-        if(Math.abs(move.col() - location.col()) == 2 && move.row() - location.row() == 0 && !hasMoved && !classBoard.endangersKing(color, location, this)) {
+        if (Math.abs(move.col() - location.col()) == 2 && move.row() - location.row() == 0 && !hasMoved && !classBoard.endangersKing(color, location, this)) {
 
-            int duringCastlePos = move.col() + (location.col() - move.col())/2;
+            int duringCastlePos = move.col() + (location.col() - move.col()) / 2;
 
             boolean rookStationary = false;
             Rook r1 = null;
             Rook r2 = null;
             boolean rookFound = false;
             ArrayList<Piece> pieces;
-            if(color == 'b')
+            if (color == 'b') {
                 pieces = classBoard.blackPieces;
-            else pieces = classBoard.whitePieces;
-            for(Piece p: pieces) {
-                if(!rookFound && p instanceof Rook) {
+            } else {
+                pieces = classBoard.whitePieces;
+            }
+            for (Piece p : pieces) {
+                if (!rookFound && p instanceof Rook) {
                     r1 = (Rook) p;
                     rookFound = true;
                 }
-                if(rookFound && p instanceof Rook)
+                if (rookFound && p instanceof Rook) {
                     r2 = (Rook) p;
+                }
             }
 
-            if(r1 != null && Math.abs(r1.getLocation().col() - move.col()) <= 2 && !r1.hasMoved)
+            if (r1 != null && Math.abs(r1.getLocation().col() - move.col()) <= 2 && !r1.hasMoved) {
                 rookStationary = true;
-            if(r2 != null && Math.abs(r2.getLocation().col() - move.col()) <= 2 && !r2.hasMoved)
+            }
+            if (r2 != null && Math.abs(r2.getLocation().col() - move.col()) <= 2 && !r2.hasMoved) {
                 rookStationary = true;
+            }
             //checks for not castling through check
-            if(rookStationary && !classBoard.endangersKing(color, new Move("" + location.row() + "" + duringCastlePos), this)) {
+            if (rookStationary && !classBoard.endangersKing(color, new Move("" + location.row() + "" + duringCastlePos), this)) {
                 return true;
             }
         }
@@ -86,10 +93,10 @@ public class King extends Piece {
         tentativeList.add(new Move("" + location.row() + "" + (location.col() - 1)));
 
 
-
-        for(Move move : tentativeList) {
-            if(move.row() >= 0 && move.row() <= 7 && move.col() >= 0 && move.col() <= 7)
+        for (Move move : tentativeList) {
+            if (move.row() >= 0 && move.row() <= 7 && move.col() >= 0 && move.col() <= 7) {
                 moveList.add(move);
+            }
         }
         return moveList;
     }
@@ -113,17 +120,18 @@ public class King extends Piece {
         //castles
         tentativeList.add(new Move("" + location.row() + "" + (location.col() + 2)));
         tentativeList.add(new Move("" + location.row() + "" + (location.col() - 2)));
-        for(Move m : tentativeList) {
-            if(validMove(m) && legalMove(m))
+        for (Move m : tentativeList) {
+            if (validMove(m) && legalMove(m)) {
                 legalList.add(new Move(m.row() + "" + m.col(), location));
+            }
         }
         return legalList;
     }
 
     public void move(Move move) {
-        if(Math.abs(move.col() - location.col()) == 2)
+        if (Math.abs(move.col() - location.col()) == 2) {
             castle(move);
-        else {
+        } else {
             super.move(move);
         }
     }
@@ -133,31 +141,36 @@ public class King extends Piece {
         Rook r2 = null;
         boolean rookFound = false;
         ArrayList<Piece> pieces;
-        if(color == 'b')
+        if (color == 'b') {
             pieces = classBoard.blackPieces;
-        else pieces = classBoard.whitePieces;
-        for(Piece p: pieces) {
-            if(!rookFound && p instanceof Rook) {
+        } else {
+            pieces = classBoard.whitePieces;
+        }
+        for (Piece p : pieces) {
+            if (!rookFound && p instanceof Rook) {
                 r1 = (Rook) p;
                 rookFound = true;
             }
-            if(rookFound && p instanceof Rook)
+            if (rookFound && p instanceof Rook) {
                 r2 = (Rook) p;
+            }
         }
         // saved because this will be the rook's destination
-        int duringCastlePos = move.col() + (location.col() - move.col())/2;
+        int duringCastlePos = move.col() + (location.col() - move.col()) / 2;
 
         board[move.row()][move.col()] = this;
         board[location.row()][location.col()] = new EmptySquare(classBoard, location);
         updateLocation(move);
 
         Rook r = null;
-        if(r1 != null && Math.abs(r1.getLocation().col() - move.col()) <= 2 && !r1.hasMoved)
+        if (r1 != null && Math.abs(r1.getLocation().col() - move.col()) <= 2 && !r1.hasMoved) {
             r = r1;
-        if(r2 != null && Math.abs(r2.getLocation().col() - move.col()) <= 2 && !r2.hasMoved)
+        }
+        if (r2 != null && Math.abs(r2.getLocation().col() - move.col()) <= 2 && !r2.hasMoved) {
             r = r2;
+        }
 
-        if(r != null) {
+        if (r != null) {
             //System.out.println("r isn't null!");
             board[r.getLocation().row()][r.getLocation().col()] = new EmptySquare(classBoard, r.getLocation());
             //System.out.println(r.getLocation().toString());
@@ -172,7 +185,7 @@ public class King extends Piece {
         return value;
     }
 
-    public char toChar(){
+    public char toChar() {
         return name;
     }
 

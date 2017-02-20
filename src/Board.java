@@ -8,53 +8,53 @@ public class Board {
     ArrayList<Piece> whitePieces;
     ArrayList<Piece> blackPieces;
     Piece[][] gameBoard;
+
     public Board() {
         gameBoard = new Piece[8][8];
         whitePieces = new ArrayList<>();
         blackPieces = new ArrayList<>();
 
-        //I add pawns first so those moves are evaluated sooner than the others
-        //This keeps the ai from moving rooks back and forth when it can't see a change in value
-        for(int i = 0; i < 8; i++) {
-            whitePieces.add(new Pawn(this,'w', new Move("1" + i)));
+        //I add pawns first so those moves are evaluated sooner than the others for the first move
+        for (int i = 0; i < 8; i++) {
+            whitePieces.add(new Pawn(this, 'w', new Move("1" + i)));
         }
-        whitePieces.add(new Rook(this,'w',new Move("00")));
-        whitePieces.add(new Rook(this,'w',new Move("07")));
-        whitePieces.add(new Knight(this,'w',new Move("01")));
-        whitePieces.add(new Knight(this,'w',new Move("06")));
-        whitePieces.add(new Bishop(this,'w',new Move("02")));
-        whitePieces.add(new Bishop(this,'w',new Move("05")));
-        whitePieces.add(new King(this,'w', new Move("04")));
-        whitePieces.add(new Queen(this,'w', new Move("03")));
+        whitePieces.add(new Rook(this, 'w', new Move("00")));
+        whitePieces.add(new Rook(this, 'w', new Move("07")));
+        whitePieces.add(new Knight(this, 'w', new Move("01")));
+        whitePieces.add(new Knight(this, 'w', new Move("06")));
+        whitePieces.add(new Bishop(this, 'w', new Move("02")));
+        whitePieces.add(new Bishop(this, 'w', new Move("05")));
+        whitePieces.add(new King(this, 'w', new Move("04")));
+        whitePieces.add(new Queen(this, 'w', new Move("03")));
 
-        blackPieces.add(new Pawn(this,'b',new Move("63")));
-        blackPieces.add(new Pawn(this,'b',new Move("64")));
-        blackPieces.add(new Pawn(this,'b',new Move("62")));
-        blackPieces.add(new Pawn(this,'b',new Move("65")));
-        blackPieces.add(new Pawn(this,'b',new Move("61")));
-        blackPieces.add(new Pawn(this,'b',new Move("66")));
-        blackPieces.add(new Pawn(this,'b',new Move("60")));
-        blackPieces.add(new Pawn(this,'b',new Move("67")));
+        blackPieces.add(new Pawn(this, 'b', new Move("63")));
+        blackPieces.add(new Pawn(this, 'b', new Move("64")));
+        blackPieces.add(new Pawn(this, 'b', new Move("62")));
+        blackPieces.add(new Pawn(this, 'b', new Move("65")));
+        blackPieces.add(new Pawn(this, 'b', new Move("61")));
+        blackPieces.add(new Pawn(this, 'b', new Move("66")));
+        blackPieces.add(new Pawn(this, 'b', new Move("60")));
+        blackPieces.add(new Pawn(this, 'b', new Move("67")));
 
-        blackPieces.add(new Rook(this,'b',new Move("70")));
-        blackPieces.add(new Rook(this,'b',new Move("77")));
-        blackPieces.add(new Knight(this,'b',new Move("71")));
-        blackPieces.add(new Knight(this,'b',new Move("76")));
-        blackPieces.add(new Bishop(this,'b',new Move("72")));
-        blackPieces.add(new Bishop(this,'b',new Move("75")));
-        blackPieces.add(new King(this,'b', new Move("74")));
-        blackPieces.add(new Queen(this,'b', new Move("73")));
+        blackPieces.add(new Rook(this, 'b', new Move("70")));
+        blackPieces.add(new Rook(this, 'b', new Move("77")));
+        blackPieces.add(new Knight(this, 'b', new Move("71")));
+        blackPieces.add(new Knight(this, 'b', new Move("76")));
+        blackPieces.add(new Bishop(this, 'b', new Move("72")));
+        blackPieces.add(new Bishop(this, 'b', new Move("75")));
+        blackPieces.add(new King(this, 'b', new Move("74")));
+        blackPieces.add(new Queen(this, 'b', new Move("73")));
 
 
-        for(Piece p:whitePieces) {
+        for (Piece p : whitePieces) {
             gameBoard[p.getLocation().row()][p.getLocation().col()] = p;
         }
-        for(Piece p:blackPieces) {
+        for (Piece p : blackPieces) {
             gameBoard[p.getLocation().row()][p.getLocation().col()] = p;
         }
-        for(int i = 2; i < 6; i++) {
-            for(int j = 0; j < 8; j++) {
-                gameBoard[i][j] = new EmptySquare(this,new Move("" + i + "" + j));
+        for (int i = 2; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
+                gameBoard[i][j] = new EmptySquare(this, new Move("" + i + "" + j));
             }
         }
     }
@@ -63,9 +63,9 @@ public class Board {
         boolean killed = false;
         ArrayList<Piece> list;
         if (color == 'w') {
-            list = (ArrayList<Piece>)blackPieces.clone();
+            list = (ArrayList<Piece>) blackPieces.clone();
         } else {
-            list = (ArrayList<Piece>)whitePieces.clone();
+            list = (ArrayList<Piece>) whitePieces.clone();
         }
         Piece taken = gameBoard[move.row()][move.col()];
         Move loc = pieceMoved.getLocation();
@@ -74,11 +74,12 @@ public class Board {
         gameBoard[loc.row()][loc.col()] = new EmptySquare(this, loc);
         pieceMoved.updateLocation(move);
         for (Piece p : list) {
-            if(!(p instanceof King)) {
+            if (!(p instanceof King)) {
                 ArrayList<Move> moveList = p.genMoves();
                 for (Move m : moveList) {
-                    if (p.killKing(m))
+                    if (p.killKing(m)) {
                         killed = true;
+                    }
                 }
             }
         }
@@ -89,17 +90,18 @@ public class Board {
     }
 
     public void remove(Piece p) {
-        if(whitePieces.contains(p))
+        if (whitePieces.contains(p)) {
             whitePieces.remove(p);
-        else if(blackPieces.contains(p))
+        } else if (blackPieces.contains(p)) {
             blackPieces.remove(p);
+        }
     }
 
     public void printBoard() {
         System.out.println("   0 1 2 3 4 5 6 7");
-        for(int r = 7; r >= 0; r--) {
+        for (int r = 7; r >= 0; r--) {
             System.out.print(r + ": ");
-            for(int c = 0; c < 8; c++) {
+            for (int c = 0; c < 8; c++) {
                 System.out.print(gameBoard[r][c].toChar() + " ");
             }
             System.out.print(":" + r);
@@ -112,23 +114,27 @@ public class Board {
     public boolean gameOver() {
         boolean whiteKing = false;
         boolean blackKing = false;
-        for(Piece p : whitePieces)
-            if(p instanceof King)
+        for (Piece p : whitePieces) {
+            if (p instanceof King) {
                 whiteKing = true;
-        for(Piece p : blackPieces)
-            if(p instanceof King)
+            }
+        }
+        for (Piece p : blackPieces) {
+            if (p instanceof King) {
                 blackKing = true;
-        if(!whiteKing || !blackKing)
-            return true;
-        return false;
+            }
+        }
+        return !whiteKing || !blackKing;
+
     }
 
     public boolean parseMove(String m) {
-        if(m.length() != 4)
+        if (m.length() != 4) {
             return false;
+        }
         Move move1 = new Move("" + m.charAt(0) + "" + m.charAt(1)); //start
         Move move2 = new Move("" + m.charAt(2) + m.charAt(3)); //dest
-        if(gameBoard[move1.row()][move1.col()].finalMoveCheck(move2)) {
+        if (gameBoard[move1.row()][move1.col()].finalMoveCheck(move2)) {
             gameBoard[move1.row()][move1.col()].move(move2);
             return true;
         }
@@ -156,7 +162,7 @@ public class Board {
 
 
         double blackScore = 0;
-        for(Piece p : blackPieces) {
+        for (Piece p : blackPieces) {
             blackScore += p.getValue();
             //penalize knights on the edge
             /*if(p instanceof Knight && p.getLocation().col() == 0 || p.getLocation().col() == 7)
@@ -170,7 +176,7 @@ public class Board {
             }*/
         }
         double whiteScore = 0;
-        for(Piece p : whitePieces) {
+        for (Piece p : whitePieces) {
             whiteScore += p.getValue();
             //penalize knights on the edge
             /*if(p instanceof Knight && p.getLocation().col() == 0 || p.getLocation().col() == 7)
@@ -186,7 +192,6 @@ public class Board {
         return whiteScore - blackScore;
 
 
-
     }
 
     public Board cloneBoard() {
@@ -195,8 +200,8 @@ public class Board {
         //empty the piece lists
         clonedBoard.blackPieces = new ArrayList<>();
         clonedBoard.whitePieces = new ArrayList<>();
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 //set the board state equal
                 Piece newPiece = gameBoard[i][j].clone(clonedBoard);
                 clonedBoard.gameBoard[i][j] = newPiece;
@@ -204,8 +209,7 @@ public class Board {
                 if (newPiece.getColor() != '-') {
                     if (newPiece.getColor() == 'w') {
                         clonedBoard.whitePieces.add(newPiece);
-                    }
-                    else {
+                    } else {
                         clonedBoard.blackPieces.add(newPiece);
                     }
                 }
@@ -219,18 +223,18 @@ public class Board {
 
     public Move[][] getMoves(char color) {
         ArrayList<Piece> pieceList;
-        if(color == 'w')
+        if (color == 'w') {
             pieceList = whitePieces;
-        else {
+        } else {
             pieceList = blackPieces;
         }
         Move[][] moveList = new Move[pieceList.size()][];
-        for(int i = 0; i < moveList.length; i++) {
+        for (int i = 0; i < moveList.length; i++) {
             ArrayList<Move> pieceMoves = pieceList.get(i).genMoves();
             int moveListLength = pieceMoves.size();
             moveList[i] = new Move[moveListLength];
-            for(int j = 0; j <  moveListLength; j++) {
-               moveList[i][j] = pieceMoves.get(j);
+            for (int j = 0; j < moveListLength; j++) {
+                moveList[i][j] = pieceMoves.get(j);
             }
         }
         return moveList;
@@ -238,8 +242,8 @@ public class Board {
 
     public BigInteger toBigInt() {
         String s = "";
-        for(int i = 0; i < gameBoard.length; i++) {
-            for(int j = 0; j < gameBoard[i].length; j++) {
+        for (int i = 0; i < gameBoard.length; i++) {
+            for (int j = 0; j < gameBoard[i].length; j++) {
                 s += gameBoard[i][j].getValue();
             }
         }
@@ -248,13 +252,14 @@ public class Board {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof Board))
+        if (!(obj instanceof Board))
             return false;
         Board board = (Board) obj;
-        for(int i = 0; i < gameBoard.length; i++) {
-            for(int j = 0; j < gameBoard[i].length; i++) {
-                if(board.gameBoard[i][j].toChar() != gameBoard[i][j].toChar())
+        for (int i = 0; i < gameBoard.length; i++) {
+            for (int j = 0; j < gameBoard[i].length; i++) {
+                if (board.gameBoard[i][j].toChar() != gameBoard[i][j].toChar()) {
                     return false;
+                }
             }
         }
         return true;

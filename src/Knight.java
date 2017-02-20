@@ -20,15 +20,17 @@ public class Knight extends Piece {
     }
 
     private void pickColor(char color) {
-        if(color == 'w')
+        if (color == 'w') {
             name = 'N';
-        else name = 'n';
+        } else {
+            name = 'n';
+        }
     }
 
     //legal as far as the piece's movement is concerned
     public boolean legalMove(Move move) {
-        if((Math.abs(move.row() - location.row()) == 2 && Math.abs(move.col() - location.col()) == 1) || //the two valid knight move patterns
-           (Math.abs(move.row() - location.row()) == 1 && Math.abs(move.col() - location.col()) == 2)) {
+        if ((Math.abs(move.row() - location.row()) == 2 && Math.abs(move.col() - location.col()) == 1) || //the two valid knight move patterns
+                (Math.abs(move.row() - location.row()) == 1 && Math.abs(move.col() - location.col()) == 2)) {
             return true;
         }
         return false;
@@ -55,9 +57,10 @@ public class Knight extends Piece {
         tentativeList.add(new Move("" + (location.row() + 2) + "" + (location.col() - 1)));
         tentativeList.add(new Move("" + (location.row() - 2) + "" + (location.col() - 1)));
 
-        for(Move move : tentativeList) {
-            if (move.row() >= 0 && move.row() <= 7 && move.col() >= 0 && move.col() <= 7)
+        for (Move move : tentativeList) {
+            if (move.row() >= 0 && move.row() <= 7 && move.col() >= 0 && move.col() <= 7) {
                 moveList.add(move);
+            }
         }
         return moveList;
     }
@@ -76,9 +79,10 @@ public class Knight extends Piece {
         tentativeList.add(new Move("" + (location.row() + 2) + "" + (location.col() - 1)));
         tentativeList.add(new Move("" + (location.row() - 2) + "" + (location.col() - 1)));
 
-        for(Move m : tentativeList) {
-            if(validMove(m))
+        for (Move m : tentativeList) {
+            if (validMove(m)) {
                 legalList.add(new Move(m.row() + "" + m.col(), location));
+            }
         }
         return legalList;
     }
@@ -87,7 +91,7 @@ public class Knight extends Piece {
         return value;
     }
 
-    public char toChar(){
+    public char toChar() {
         return name;
     }
 
