@@ -59,6 +59,13 @@ public class Board {
         }
     }
 
+    //Currently only used to make an instance of Board for clone. Much faster than the default constructor
+    public Board(int modifier) {
+        gameBoard = new Piece[8][8];
+        whitePieces = new ArrayList<>();
+        blackPieces = new ArrayList<>();
+    }
+
     public boolean endangersKing(char color, Move move, Piece pieceMoved) {
         boolean killed = false;
         ArrayList<Piece> list;
@@ -196,10 +203,7 @@ public class Board {
 
     public Board cloneBoard() {
         long start = System.nanoTime();
-        Board clonedBoard = new Board();
-        //empty the piece lists
-        clonedBoard.blackPieces = new ArrayList<>();
-        clonedBoard.whitePieces = new ArrayList<>();
+        Board clonedBoard = new Board(1);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 //set the board state equal
