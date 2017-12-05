@@ -51,7 +51,7 @@ public class AI {
         else pieces = board.blackPieces;
         Move[][] moveList = board.getMoves(color);
 
-        double[][] moveScores = new double[moveList.length][];
+        final double[][] moveScores = new double[moveList.length][];
         for (int i = 0; i < moveScores.length; i++) {
             moveScores[i] = new double[moveList[i].length];
         }
@@ -59,7 +59,7 @@ public class AI {
         ArrayList<Thread> threads = new ArrayList<>();
         for (int i = 0; i < moveList.length; i++) {
             for (int j = 0; j < moveList[i].length; j++) {
-                Board placeholder = board.cloneBoard();
+                final Board placeholder = board.cloneBoard();
                 String locString = pieces.get(i).getLocation().row() + "" + pieces.get(i).getLocation().col();
                 placeholder.forceMove("" + locString + "" + moveList[i][j].row() + moveList[i][j].col());
 
