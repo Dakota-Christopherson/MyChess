@@ -8,7 +8,7 @@ public class Board {
     ArrayList<Piece> whitePieces;
     ArrayList<Piece> blackPieces;
     Piece[][] gameBoard;
-
+    double kMOBILITY;
     public Board() {
         gameBoard = new Piece[8][8];
         whitePieces = new ArrayList<>();
@@ -168,14 +168,10 @@ public class Board {
     }
 
     public double getValue() {
-        //designed to be small enough that it will never take precedence over captures
-        double defendModifier = .000005;
-        double attackModifier = .001;
-
-
         double blackScore = 0;
         for (Piece p : blackPieces) {
             blackScore += p.getValue();
+            blackScore += ((double) p.genMoves().size()) * kMOBILITY;
             //penalize knights on the edge
             /*if(p instanceof Knight && p.getLocation().col() == 0 || p.getLocation().col() == 7)
                 blackScore -= .1;
@@ -190,6 +186,7 @@ public class Board {
         double whiteScore = 0;
         for (Piece p : whitePieces) {
             whiteScore += p.getValue();
+            whiteScore += ((double) p.genMoves().size()) * kMOBILITY;
             //penalize knights on the edge
             /*if(p instanceof Knight && p.getLocation().col() == 0 || p.getLocation().col() == 7)
                 whiteScore -= .1;
@@ -209,6 +206,7 @@ public class Board {
     public Board cloneBoard() {
         long start = System.nanoTime();
         Board clonedBoard = new Board(1);
+        clonedBoard.kMOBILITY = this.kMOBILITY;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 //set the board state equal

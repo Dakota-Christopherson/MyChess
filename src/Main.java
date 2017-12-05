@@ -19,6 +19,7 @@ public class Main {
         Const.kROOK = 5;
         Const.kQUEEN = 8;
         Board b1 = new Board();
+        b1.kMOBILITY = .005;
         AI aiB = new AI(b1, 'b', 4);
 
         Const.kPAWN = 0.8f;
@@ -27,6 +28,7 @@ public class Main {
         Const.kROOK = 4.8f;
         Const.kQUEEN = 12;
         Board b2 = new Board();
+        b2.kMOBILITY = 0.01;
         // read in the rest of the values
         AI aiW = new AI(b2, 'w', 4);
         b1.printBoard();
@@ -59,7 +61,7 @@ public class Main {
                     b1.parseMove(wMove);
                     b2.parseMove(wMove);
                     valid = true;
-                    
+
                     tmpScore = b1.whitePieces.size() + b1.blackPieces.size();
                     if (score == tmpScore) {
                         unchangedScore++;
