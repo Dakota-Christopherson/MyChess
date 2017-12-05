@@ -14,10 +14,15 @@ public class Board {
         whitePieces = new ArrayList<>();
         blackPieces = new ArrayList<>();
 
-        //I add pawns first so those moves are evaluated sooner than the others for the first move
-        for (int i = 0; i < 8; i++) {
-            whitePieces.add(new Pawn(this, 'w', new Move("1" + i)));
-        }
+        whitePieces.add(new Pawn(this, 'w', new Move("13")));
+        whitePieces.add(new Pawn(this, 'w', new Move("14")));
+        whitePieces.add(new Pawn(this, 'w', new Move("12")));
+        whitePieces.add(new Pawn(this, 'w', new Move("15")));
+        whitePieces.add(new Pawn(this, 'w', new Move("11")));
+        whitePieces.add(new Pawn(this, 'w', new Move("16")));
+        whitePieces.add(new Pawn(this, 'w', new Move("10")));
+        whitePieces.add(new Pawn(this, 'w', new Move("17")));
+
         whitePieces.add(new Rook(this, 'w', new Move("00")));
         whitePieces.add(new Rook(this, 'w', new Move("07")));
         whitePieces.add(new Knight(this, 'w', new Move("01")));

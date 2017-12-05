@@ -29,12 +29,12 @@ public class Move{
         return row() == m.row() && col() == m.col();
     }
 
-    public int getValue(Piece[][] gameBoard) {
+    public float getValue(Piece[][] gameBoard) {
         return gameBoard[row()][col()].getValue();
     }
 
     public int compareTo(Piece[][] gameBoard, Move m) {
-        return gameBoard[row()][col()].getValue() - gameBoard[m.row()][m.col()].getValue();
+        return gameBoard[row()][col()].getValue() - gameBoard[m.row()][m.col()].getValue() > 1 ? 1 : 0;
     }
 
     @Override

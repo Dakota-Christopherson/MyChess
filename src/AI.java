@@ -13,6 +13,7 @@ public class AI {
     Move[][] killerMoves;
     Hashtable<BigInteger, double[]> transposition; //position 0 in array will be minimax value, 1 will be depth
     private int killerCount = 3;
+    private float pawnVal = 1, knightVal = 3, bishopVal = 3, rookVal = 5, queenVal = 8;
 
     public AI(Board board, char color, int ply) {
         this.ply = ply;
@@ -21,6 +22,21 @@ public class AI {
         this.color = color;
 
         turn = color == 'b';
+    }
+
+    public AI(Board board, char color, int ply, float pawnVal, float knightVal, float bishopVal, float rookVal, float queenVal) {
+        this.ply = ply;
+        killerMoves = new Move[ply][killerCount];
+        this.board = board;
+        this.color = color;
+
+        turn = color == 'b';
+
+        this.pawnVal = pawnVal;
+        this.knightVal = knightVal;
+        this.bishopVal = bishopVal;
+        this.rookVal = rookVal;
+        this.queenVal = queenVal;
     }
 
     public String aiMove() {
@@ -144,7 +160,7 @@ public class AI {
 
                     //used to keep value for killer move, if taken after forceMove it will just give the piece value
                     Move move = new Move(moveList[i][j].toString(), placeholder.whitePieces.get(i).getLocation());
-                    int moveVal = move.getValue(placeholder.gameBoard); //destination piece value
+                    float moveVal = move.getValue(placeholder.gameBoard); //destination piece value
 
                     placeholder.forceMove(p.getLocation().toString() + "" + moveList[i][j].toString());
                     //BigInteger placeholderBigInt = placeholder.toBigInt();
@@ -265,7 +281,7 @@ public class AI {
         }
 
         //sort by piece using the highest valued move of each piece
-        int[] ptrVals = new int[moveList.length];
+        float[] ptrVals = new float[moveList.length];
         for (int i = 0; i < ptrVals.length; i++) {
             if (moveList[i].length == 0) {
                 ptrVals[i] = -20000;
@@ -273,7 +289,7 @@ public class AI {
         }
 
         Move[] tmp;
-        int tmpVal;
+        float tmpVal;
         int j;
         for (int i = 1; i < moveList.length; i++) {
             tmp = moveList[i];

@@ -7,7 +7,7 @@ public class Rook extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
-    private int value = 5;
+    private float value = 5;
     char color;
 
     public Rook(Board board, char color, Move location) {
@@ -16,6 +16,16 @@ public class Rook extends Piece {
         this.board = board.gameBoard; //please get better at naming things in advance
         this.color = color;
         pickColor(color);
+        value = Const.kROOK;
+    }
+
+    public Rook(Board board, char color, Move location, float val) {
+        super(board, color, location);
+        classBoard = board;
+        this.board = board.gameBoard; //please get better at naming things in advance
+        this.color = color;
+        pickColor(color);
+        value = val;
     }
 
     private void pickColor(char color) {
@@ -75,7 +85,7 @@ public class Rook extends Piece {
         return legalList;
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
@@ -84,6 +94,6 @@ public class Rook extends Piece {
     }
 
     public Piece clone(Board newBoard) {
-        return new Rook(newBoard, color, location);
+        return new Rook(newBoard, color, location, value);
     }
 }

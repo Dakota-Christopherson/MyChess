@@ -109,7 +109,7 @@ public abstract class Piece {
         return location;
     }
 
-    public abstract int getValue();
+    public abstract float getValue();
 
     public char toChar() {
         return name;

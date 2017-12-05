@@ -181,7 +181,7 @@ public class King extends Piece {
         }
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 

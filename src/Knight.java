@@ -8,7 +8,7 @@ public class Knight extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
-    private int value = 3;
+    private float value = 3;
     char color;
 
     public Knight(Board board, char color, Move location) {
@@ -17,6 +17,16 @@ public class Knight extends Piece {
         this.board = board.gameBoard; //please get better at naming things in advance
         this.color = color;
         pickColor(color);
+        value = Const.kKNIGHT;
+    }
+
+    public Knight(Board board, char color, Move location, float val) {
+        super(board, color, location);
+        classBoard = board;
+        this.board = board.gameBoard; //please get better at naming things in advance
+        this.color = color;
+        pickColor(color);
+        value = val;
     }
 
     private void pickColor(char color) {
@@ -87,7 +97,7 @@ public class Knight extends Piece {
         return legalList;
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
@@ -96,6 +106,6 @@ public class Knight extends Piece {
     }
 
     public Piece clone(Board newBoard) {
-        return new Knight(newBoard, color, location);
+        return new Knight(newBoard, color, location, value);
     }
 }

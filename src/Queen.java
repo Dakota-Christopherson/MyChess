@@ -7,7 +7,7 @@ public class Queen extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
-    private int value = 8;
+    private float value = 8;
     char color;
 
     public Queen(Board board, char color, Move location) {
@@ -16,6 +16,16 @@ public class Queen extends Piece {
         this.board = board.gameBoard; //please get better at naming things in advance
         this.color = color;
         pickColor(color);
+        value = Const.kQUEEN;
+    }
+
+    public Queen(Board board, char color, Move location, float val) {
+        super(board, color, location);
+        classBoard = board;
+        this.board = board.gameBoard; //please get better at naming things in advance
+        this.color = color;
+        pickColor(color);
+        value = val;
     }
 
     private void pickColor(char color) {
@@ -115,7 +125,7 @@ public class Queen extends Piece {
         return legalList;
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
@@ -124,6 +134,6 @@ public class Queen extends Piece {
     }
 
     public Piece clone(Board newBoard) {
-        return new Queen(newBoard, color, location);
+        return new Queen(newBoard, color, location, value);
     }
 }

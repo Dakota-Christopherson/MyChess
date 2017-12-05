@@ -7,7 +7,7 @@ public class Pawn extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
-    private int value = 1;
+    private float value = 1;
     char color;
     boolean enPassantPoss = false;
 
@@ -17,6 +17,16 @@ public class Pawn extends Piece {
         this.board = board.gameBoard; //please get better at naming things in advance
         this.color = color;
         pickColor(color);
+        value = Const.kPAWN;
+    }
+
+    public Pawn(Board board, char color, Move location, float val) {
+        super(board, color, location);
+        classBoard = board;
+        this.board = board.gameBoard; //please get better at naming things in advance
+        this.color = color;
+        pickColor(color);
+        value = val;
     }
 
     private void pickColor(char color) {
@@ -141,7 +151,7 @@ public class Pawn extends Piece {
 
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
@@ -150,7 +160,7 @@ public class Pawn extends Piece {
     }
 
     public Piece clone(Board newBoard) {
-        return new Pawn(newBoard, color, location);
+        return new Pawn(newBoard, color, location, value);
     }
 
 }

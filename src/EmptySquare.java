@@ -9,7 +9,7 @@ public class EmptySquare extends Piece {
         super(board,'-',move);
         location = move;
     }
-    public int getValue() {
+    public float getValue() {
         return 0;
     }
     public boolean validMove(Move move) {

@@ -7,7 +7,7 @@ public class Bishop extends Piece {
     private Piece[][] board;
     private Board classBoard;
     private char name;
-    private int value = 3;
+    private float value = 3;
     char color;
 
     public Bishop(Board board, char color, Move location) {
@@ -16,6 +16,16 @@ public class Bishop extends Piece {
         this.board = board.gameBoard; //please get better at naming things in advance
         this.color = color;
         pickColor(color);
+        value = Const.kBISHOP;
+    }
+
+    public Bishop(Board board, char color, Move location, float val) {
+        super(board, color, location);
+        classBoard = board;
+        this.board = board.gameBoard; //please get better at naming things in advance
+        this.color = color;
+        pickColor(color);
+        value = val;
     }
 
     private void pickColor(char color) {
@@ -89,7 +99,7 @@ public class Bishop extends Piece {
         return legalList;
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
@@ -98,6 +108,6 @@ public class Bishop extends Piece {
     }
 
     public Piece clone(Board newBoard) {
-        return new Bishop(newBoard, color, location);
+        return new Bishop(newBoard, color, location, value);
     }
 }
