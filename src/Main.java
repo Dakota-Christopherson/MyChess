@@ -7,6 +7,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        int noCaptureLimit = 35;
+        boolean staleMate = false;
+        int score = 0, tmpScore = 0;
+        int unchangedScore = 0;
         Scanner scan = new Scanner(System.in);
 
         Const.kPAWN = 1;
@@ -29,7 +33,8 @@ public class Main {
 
         boolean valid;
         boolean whiteTurn = false;
-        while (!b1.gameOver()) {
+        game:
+        while (!b1.gameOver() && !staleMate) {
             valid = false;
             whiteTurn = !whiteTurn;
             while (!valid) {
@@ -38,11 +43,33 @@ public class Main {
                     b1.parseMove(bMove);
                     b2.parseMove(bMove);
                     valid = true;
+
+                    tmpScore = b1.whitePieces.size() + b1.blackPieces.size();
+                    if (score == tmpScore) {
+                        unchangedScore++;
+                    } else {
+                        unchangedScore = 0;
+                        score = tmpScore;
+                    }
+                    if (unchangedScore >= noCaptureLimit) {
+                        break game;
+                    }
                 } else {
                     String wMove = aiW.aiMove();
                     b1.parseMove(wMove);
                     b2.parseMove(wMove);
                     valid = true;
+                    
+                    tmpScore = b1.whitePieces.size() + b1.blackPieces.size();
+                    if (score == tmpScore) {
+                        unchangedScore++;
+                    } else {
+                        unchangedScore = 0;
+                        score = tmpScore;
+                    }
+                    if (unchangedScore >= noCaptureLimit) {
+                        break game;
+                    }
                     /*System.out.println("Please enter your move: ");
                     String candidateMove = scan.nextLine();
 
