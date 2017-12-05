@@ -172,31 +172,11 @@ public class Board {
         for (Piece p : blackPieces) {
             blackScore += p.getValue();
             blackScore += ((double) p.genMoves().size()) * kMOBILITY;
-            //penalize knights on the edge
-            /*if(p instanceof Knight && p.getLocation().col() == 0 || p.getLocation().col() == 7)
-                blackScore -= .1;
-            ArrayList<Move> ml = p.genMovesScoring();
-            for(Move m : ml) {
-                if(gameBoard[m.row()][m.col()].getColor() == 'w' && !(gameBoard[m.row()][m.col()] instanceof King))
-                    blackScore += attackModifier * m.getValue(gameBoard) - (attackModifier*.1*p.getValue());
-                if(gameBoard[m.row()][m.col()].getColor() == 'b' && !(gameBoard[m.row()][m.col()] instanceof King))
-                    blackScore += defendModifier * m.getValue(gameBoard);
-            }*/
         }
         double whiteScore = 0;
         for (Piece p : whitePieces) {
             whiteScore += p.getValue();
             whiteScore += ((double) p.genMoves().size()) * kMOBILITY;
-            //penalize knights on the edge
-            /*if(p instanceof Knight && p.getLocation().col() == 0 || p.getLocation().col() == 7)
-                whiteScore -= .1;
-            ArrayList<Move> ml = p.genMovesScoring();
-            for(Move m : ml) {
-                if(gameBoard[m.row()][m.col()].getColor() == 'b' && !(gameBoard[m.row()][m.col()] instanceof King))
-                    blackScore += attackModifier * m.getValue(gameBoard) - (attackModifier*.01*p.getValue());
-                if(gameBoard[m.row()][m.col()].getColor() == 'w' && !(gameBoard[m.row()][m.col()] instanceof King))
-                    blackScore += defendModifier * m.getValue(gameBoard);
-            }*/
         }
         return whiteScore - blackScore;
 

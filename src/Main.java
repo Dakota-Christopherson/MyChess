@@ -13,22 +13,22 @@ public class Main {
         int unchangedScore = 0;
         Scanner scan = new Scanner(System.in);
 
-        Const.kPAWN = 1;
-        Const.kKNIGHT = 3;
-        Const.kBISHOP = 3;
-        Const.kROOK = 5;
-        Const.kQUEEN = 8;
+        Const.kPAWN = Float.valueOf(args[0]);
+        Const.kKNIGHT = Float.valueOf(args[1]);
+        Const.kBISHOP = Float.valueOf(args[2]);
+        Const.kROOK = Float.valueOf(args[3]);
+        Const.kQUEEN = Float.valueOf(args[4]);
         Board b1 = new Board();
-        b1.kMOBILITY = .005;
+        b1.kMOBILITY = Float.valueOf(args[5]);
         AI aiB = new AI(b1, 'b', 4);
 
-        Const.kPAWN = 0.8f;
-        Const.kKNIGHT = 4;
-        Const.kBISHOP = 3.5f;
-        Const.kROOK = 4.8f;
-        Const.kQUEEN = 12;
+        Const.kPAWN = Float.valueOf(args[6]);
+        Const.kKNIGHT = Float.valueOf(args[7]);
+        Const.kBISHOP = Float.valueOf(args[8]);
+        Const.kROOK = Float.valueOf(args[9]);
+        Const.kQUEEN = Float.valueOf(args[10]);
         Board b2 = new Board();
-        b2.kMOBILITY = 0.01;
+        b2.kMOBILITY = Float.valueOf(args[11]);
         // read in the rest of the values
         AI aiW = new AI(b2, 'w', 4);
         b1.printBoard();
